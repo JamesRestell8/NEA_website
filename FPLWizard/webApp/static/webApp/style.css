@@ -5,7 +5,7 @@ h1 {
 nav {
     background-color: #3a24f0;
     padding: 10px;
-    text-align: center;
+    text-align: left;
     width: 100%;
 
     position: sticky;
@@ -31,6 +31,6 @@ nav a:hover {
 
 p {
     font-size: x-large;
-    color: red;
+    color: green;
     text-align: center;
 }
