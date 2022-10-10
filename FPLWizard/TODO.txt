@@ -1,0 +1,1 @@
+Next thing to do is get a positions dropdown on the nav menu, and make pages for each link so the site can be properly navigated.

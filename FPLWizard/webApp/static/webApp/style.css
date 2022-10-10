@@ -2,31 +2,35 @@ h1 {
     color: turquoise;
 }
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
+nav {
+    background-color: #3a24f0;
+    padding: 10px;
     text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+    width: 100%;
+
+    position: sticky;
+    top: 0px;
 }
 
-/* Change the link color to black on hover */
-li a:hover {
-    background-color: #111;
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0px 10px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+@media
+(prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
 }
 
 p {
     font-size: x-large;
+    color: red;
+    text-align: center;
 }
