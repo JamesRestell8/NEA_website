@@ -12,14 +12,6 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-def allPlayers(request):
-    template = loader.get_template("webApp/allPlayers.html")
-    context = {
-        'pageName': "All Players"
-        }
-    return HttpResponse(template.render(context, request))
-
-
 def positions(request):
     template = loader.get_template("webApp/positions.html")
     context = {
@@ -34,3 +26,4 @@ def myFPL(request):
         'pageName': "My FPL"
     }
     return HttpResponse(template.render(context, request))
+
