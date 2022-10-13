@@ -1,0 +1,14 @@
+{% load static %}
+
+<!DOCTYPE>
+<head>
+    <title>My FPL</title>
+    <link rel="stylesheet" href="{% static 'webApp/style.css' %}">
+    <script src="{% static 'webApp/js/jquery-3.6.1.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            const navbar = document.createElement('nav');
+            navbar.load('/navbar.html');
+        });
+    </script>
+</head>
