@@ -27,3 +27,30 @@ def myFPL(request):
     }
     return HttpResponse(template.render(context, request))
 
+def goalkeepers(request):
+    template = loader.get_template("webApp/positions.html")
+    context = {
+        'pageName': 'goalkeepers'
+    }
+    return HttpResponse(template.render(context, request))
+
+def defenders(request):
+    template = loader.get_template("webApp/positions.html")
+    context = {
+        'pageName': 'defenders'
+    }
+    return HttpResponse(template.render(context, request))
+
+def midfielders(request):
+    template = loader.get_template("webApp/positions.html")
+    context = {
+        'pageName': 'midfielders'
+    }
+    return HttpResponse(template.render(context, request))
+
+def attackers(request):
+    template = loader.get_template("webApp/positions.html")
+    context = {
+        'pageName': 'attackers'
+    }
+    return HttpResponse(template.render(context, request))    

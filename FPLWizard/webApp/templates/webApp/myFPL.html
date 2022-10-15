@@ -5,10 +5,22 @@
     <title>My FPL</title>
     <link rel="stylesheet" href="{% static 'webApp/style.css' %}">
     <script src="{% static 'webApp/js/jquery-3.6.1.js' %}"></script>
-    <script>
-        $(document).ready(function(){
-            const navbar = document.createElement('nav');
-            navbar.load('/navbar.html');
-        });
-    </script>
 </head>
+
+<body>
+    <nav id='header' class='navbar'>
+        <a href="/">Home</a>
+        <div class='dropdown'>
+            <a class='dropbtn'>Positions</a>
+            <div class='dropdown-content'>
+                <a href="/Goalkeepers">Goalkeepers</a>
+                <a href="/Defenders">Defenders</a>
+                <a href="/Midfielders">Midfielders</a>
+                <a href="/Attackers">Attackers</a>
+            </div>
+        </div>
+        <a href="/MyFPL">My FPL</a>
+    </nav>
+    
+    <h1>Hello World!</h1>
+</body>
