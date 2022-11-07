@@ -1,24 +1,9 @@
+{% extends 'base.html'%}
+
 {% load static %}
 
-<head>
-    <title>Positions</title>
-    <link rel="stylesheet" href="{% static 'webApp/style.css' %}">
-</head>
+{% block title %}{{pageName}}{% endblock %}
 
-<body>
-    <nav id='header' class='navbar'>
-        <a href="/">Home</a>
-        <div class='dropdown'>
-            <a class='dropbtn'>Positions</a>
-            <div class='dropdown-content'>
-                <a href="/Goalkeepers">Goalkeepers</a>
-                <a href="/Defenders">Defenders</a>
-                <a href="/Midfielders">Midfielders</a>
-                <a href="/Attackers">Attackers</a>
-            </div>
-        </div>
-        <a href="/MyFPL">My FPL</a>
-    </nav>
-    
-    <p>Now on the {{pageName}} Screen</p>
-</body>
+{% block content %}
+<p>Now on the {{pageName}} Screen</p>
+{% endblock %}

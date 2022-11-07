@@ -14,8 +14,10 @@ class FPLAPIStatsGameweek(models.Model):
     fpl_clean_sheets = models.IntegerField(default=0, verbose_name='Clean Sheets')
     fpl_goals_conceded = models.IntegerField(default=0, verbose_name='Goals Conceded')
     fpl_total_points = models.IntegerField(default=0, verbose_name='Total Points')
-    fpl_team = models.IntegerField(verbose_name='Team') # should be a number 1-20
-    fpl_position = models.IntegerField(verbose_name='Position') # should be a number 1-4
+    # should be a number 1-20
+    fpl_team = models.IntegerField(verbose_name='Team', validators=[MinValueValidator(0), MaxValueValidator(21)]) 
+    # should be a number 1-4
+    fpl_position = models.IntegerField(verbose_name='Position', validators=[MinValueValidator(0), MaxValueValidator(5)]) 
 
     fpl_cost = models.FloatField(verbose_name='Cost')
     fpl_threat = models.FloatField(verbose_name='Threat')
@@ -51,14 +53,15 @@ class Team(models.Model):
 
 
 class Fixture(models.Model):
-    fixtureID = models.IntegerField(primary_key=True)
-    homeTeamID = models.ForeignKey(Team, db_column='teamID', verbose_name='Home Team ID', on_delete=models.CASCADE)
-    awayTeamID = models.ForeignKey(Team, db_column='teamID', verbose_name='Away Team ID', on_delete=models.CASCADE)
-    homeTeamStrength = models.IntegerKey(verbose_name="Home Team Strength")
-    awayTeamStrength = models.IntegerKey(verbose_name="Away Team Strength")
-    homeTeamGoals = models.IntegerKey(verbose_name="Home Team Goals")
-    awayTeamGoals = models.IntegerKey(verbose_name="Away Team Goals")
-    gameweekNumber = models.ForeignKey(Gameweek, db_column='gameweekNumber', verbose_name='Gameweek', on_delete=models.CASCADE)
+    pass
+    #fixtureID = models.IntegerField(primary_key=True)
+    #homeTeamID = models.ForeignKey(Team, verbose_name='Home Team ID', on_delete=models.CASCADE)
+    #awayTeamID = models.ForeignKey(Team, verbose_name='Away Team ID', on_delete=models.CASCADE)
+    #homeTeamStrength = models.IntegerField(verbose_name="Home Team Strength")
+    #awayTeamStrength = models.IntegerField(verbose_name="Away Team Strength")
+    #homeTeamGoals = models.IntegerField(verbose_name="Home Team Goals")
+    #awayTeamGoals = models.IntegerField(verbose_name="Away Team Goals")
+    #gameweekNumber = models.ForeignKey(Gameweek, verbose_name='Gameweek', on_delete=models.CASCADE)
 
 
 class APIIDDictionary(models.Model):
@@ -72,25 +75,25 @@ class PlayerTeam(models.Model):
     # id column which will auto_increment, and let the other two just be foreign keys,
     # making this a de-facto composite foreign primary key.
     num = models.IntegerField(primary_key=True)
-    playerID = models.ForeignKey(APIIDDictionary, db_column='playerID', verbose_name="Player ID", on_delete=models.CASCADE) 
+    playerID = models.ForeignKey(APIIDDictionary, verbose_name="Player ID", on_delete=models.CASCADE) 
     # on_delete = models.CASCADE means if the foreign object is deleted, the child object is also deleted
-    teamID = models.ForeignKey(Team, db_column="teamID", verbose_name='Team ID', on_delete=models.CASCADE)
+    teamID = models.ForeignKey(Team, verbose_name='Team ID', on_delete=models.CASCADE)
 
 
 class TeamFixture(models.Model):
     # using same composite foreign primary key method as in PlayerTeam table
     # by defualt, Django names the ID field in a table "TableName_id"
     num = models.IntegerField(primary_key=True)
-    fixtureID = models.ForeignKey(Fixture, db_column="fixtureID", verbose_name='Fixture ID', on_delete=models.CASCADE)
-    teamID = models.ForeignKey(Team, db_column="teamID", verbose_name='Team ID', on_delete=models.CASCADE)
+    fixtureID = models.ForeignKey(Fixture, verbose_name='Fixture ID', on_delete=models.CASCADE)
+    teamID = models.ForeignKey(Team, verbose_name='Team ID', on_delete=models.CASCADE)
 
 
 class XPGameweek(models.Model):
     # using same composite foreign primary key method as in PlayerTeam table
     num = models.IntegerField(primary_key=True)
 
-    gameweekNumber = models.ForeignKey(Gameweek, db_column='gameweekNumber', verbose_name='Gameweek', on_delete=models.CASCADE)
-    playerID = models.ForeignKey(APIIDDictionary, db_column='playerID', verbose_name='Player ID', on_delete=models.CASCADE)
+    gameweekNumber = models.ForeignKey(Gameweek, verbose_name='Gameweek', on_delete=models.CASCADE)
+    playerID = models.ForeignKey(APIIDDictionary, verbose_name='Player ID', on_delete=models.CASCADE)
 
     xP = models.FloatField(verbose_name='Expected Points')
     formCoefficient = models.FloatField(verbose_name='Form coefficient') 

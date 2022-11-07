@@ -53,4 +53,9 @@ def attackers(request):
     context = {
         'pageName': 'attackers'
     }
-    return HttpResponse(template.render(context, request))    
+    return HttpResponse(template.render(context, request))
+
+def fplIDHelp(request):
+    template = loader.get_template("webApp/fplIDHelp.html")
+    context = {}
+    return HttpResponse(template.render(context, request))
