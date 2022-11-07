@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% load static %}
+
 <!DOCTYPE html>
 <head>
     <title>My FPL</title>
@@ -5,12 +8,12 @@
     <script src="{% static 'webApp/js/jquery-3.6.1.js' %}"></script>
 </head>
 
-<body>
-    <h1>Finding my FPL ID</h1>
-
+{% block content %}
+    <h1>Finding your FPL ID</h1>
     <div>
-        1. Login to fantasy premier league via fantasy.premierleague.com
-        2. Navigate to the "Points" page
+        1. Login to fantasy premier league via fantasy.premierleague.com <br>
+        2. Navigate to the "Points" page <br>
         3. The number after "fantasy.premierleague.com/entry/..." is your FPL ID
     </div>
-</body>
+    <a id='text' href='/MyFPL'>Back to myFPL</a>
+{% endblock %}

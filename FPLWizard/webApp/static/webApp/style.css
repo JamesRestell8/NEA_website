@@ -65,3 +65,8 @@ p {
     color: green;
     text-align: center;
 }
+
+#text {
+    color: blue;
+    font-size: large;
+}
