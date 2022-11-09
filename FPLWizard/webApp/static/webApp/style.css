@@ -1,18 +1,23 @@
+* {
+    font-family: 'Abel';
+}
+
 h1 {
-    color: red;
+    color: rgb(0, 31, 131);
 }
 
 nav {
     background-color: blue;
     padding: 16px;
     border: none;
+    text-align: center;
 }
 
 a {
     background-color: blue;
     color: white;
     padding:16px;
-    font-size: 16px;
+    font-size: 28px;
     border: none;
 }
 
@@ -83,6 +88,11 @@ p {
 .backButton:hover {
     animation: pulse 2s;
     transition: .3s;
+}
+
+#title {
+    text-align: center;
+    font-size: 60px;
 }
 
 @keyframes pulse{
