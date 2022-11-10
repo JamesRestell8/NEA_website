@@ -22,6 +22,15 @@
         </div>
         <a href="/MyFPL">My FPL</a>
     </nav>
-    
-    <a href='/MyFPL/fplIDHelp'>How to find my FPL ID?</a>
+
+    <form action='' method='post'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' value='Submit'>
+    </form>
+
+
+    <div id='center'>
+        <a class='backButton' id='idHelp' href='/MyFPL/fplIDHelp'>How to find my FPL ID?</a>
+    </div>
 </body>

@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.views import generic
 from django.template import loader
 
+from .forms import fplIDForm
+
 # Create your views here.
 
 # Home/Welcome screen
@@ -25,6 +27,7 @@ def myFPL(request):
     context = {
         'pageName': "My FPL"
     }
+    context['form'] = fplIDForm
     return HttpResponse(template.render(context, request))
 
 def goalkeepers(request):

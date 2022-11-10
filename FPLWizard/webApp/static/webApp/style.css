@@ -4,6 +4,8 @@
 
 h1 {
     color: rgb(0, 31, 131);
+    text-align: center;
+    font-size: 50px;
 }
 
 nav {
@@ -11,6 +13,11 @@ nav {
     padding: 16px;
     border: none;
     text-align: center;
+}
+
+form {
+    text-align: center;
+    font-size: 25px;
 }
 
 a {
@@ -58,6 +65,14 @@ a {
     background-color: #2500b7;
 }
 
+.navbar a:link {
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #2500b7;
+}
+
 @media
 (prefers-reduced-motion: no-preference) {
     html {
@@ -88,6 +103,10 @@ p {
 .backButton:hover {
     animation: pulse 2s;
     transition: .3s;
+}
+
+#center {
+    text-align: center;
 }
 
 #title {
