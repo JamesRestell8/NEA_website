@@ -24,11 +24,27 @@ def positions(request):
 
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
+    fplID = ""
+    if request.method == "POST":
+        form = fplIDForm(request.POST)
+
+        if form.is_valid():
+            fplID = form.cleaned_data["fplID"]
+            # this is now a variable holding fplID, which can be used
+            # to retrieve the user's FPL team from the API server
+            # still need to figure out how the API works
+
+    else:
+        form = fplIDForm()
+    
     context = {
-        'pageName': "My FPL"
+        'pageName': "My FPL",
+        'form': form,
+        'fplID': fplID
     }
-    context['form'] = fplIDForm
     return HttpResponse(template.render(context, request))
+
+
 
 def goalkeepers(request):
     template = loader.get_template("webApp/positions.html")

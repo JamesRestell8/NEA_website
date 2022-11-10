@@ -23,12 +23,13 @@
         <a href="/MyFPL">My FPL</a>
     </nav>
 
-    <form action='' method='post'>
+    <form action='/MyFPL/' method='post'>
         {% csrf_token %}
         {{ form.as_p }}
         <input type='submit' value='Submit'>
     </form>
 
+    <h3>{{ fplID }}</h3>
 
     <div id='center'>
         <a class='backButton' id='idHelp' href='/MyFPL/fplIDHelp'>How to find my FPL ID?</a>
