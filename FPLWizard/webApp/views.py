@@ -4,8 +4,7 @@ from django.views import generic
 from django.template import loader
 
 from .forms import fplIDForm
-
-# Create your views here.
+from .person import User
 
 # Home/Welcome screen
 def index(request):
@@ -25,22 +24,33 @@ def positions(request):
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
     fplID = ""
+    email = ""
+    password = ""
+    team = ""
     if request.method == "POST":
         form = fplIDForm(request.POST)
 
         if form.is_valid():
             fplID = form.cleaned_data["fplID"]
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
             # this is now a variable holding fplID, which can be used
             # to retrieve the user's FPL team from the API server
-            # still need to figure out how the API works
+            # still need to figure out how the API works.
+            user = User(email, password, fplID)
+            team = user.getFplTeam()
 
     else:
         form = fplIDForm()
     
+    
     context = {
         'pageName': "My FPL",
         'form': form,
-        'fplID': fplID
+        'fplID': fplID,
+        'email': email,
+        'password': password,
+        'teamInfo': team
     }
     return HttpResponse(template.render(context, request))
 

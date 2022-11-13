@@ -1,11 +1,12 @@
 {% load static %}
 
-<!DOCTYPE>
+<!DOCTYPE html>
 <head>
     <title>My FPL</title>
     <link rel="stylesheet" href="{% static 'webApp/style.css' %}">
     <script src="{% static 'webApp/js/jquery-3.6.1.js' %}"></script>
     <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'>
+    <link rel='icon' type='image/png' href="{% static 'webApp/logo.png' %}">
 </head>
 
 <body>
@@ -29,9 +30,16 @@
         <input type='submit' value='Submit'>
     </form>
 
-    <h3>{{ fplID }}</h3>
-
+    {% if fplID != "" and email != "" and password != ""%}
+        <h3>FPL ID: {{ fplID }}</h3>
+        <h3>Email: {{ email }}</h3>
+        <h3>Password: {{ password }}</h3>
+    {% endif %}
     <div id='center'>
         <a class='backButton' id='idHelp' href='/MyFPL/fplIDHelp'>How to find my FPL ID?</a>
+    </div>
+
+    <div id='center'>
+        <h3>{{ teamInfo }}</h3>
     </div>
 </body>
