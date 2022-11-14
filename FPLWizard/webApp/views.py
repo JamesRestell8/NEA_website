@@ -39,7 +39,7 @@ def myFPL(request):
             fplID = form.cleaned_data["fplID"]
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
-
+        
             # Make a new instance of user class, and use method to access FPL team
             user = User(email, password, fplID)
             team = user.getFplTeam()
@@ -50,7 +50,7 @@ def myFPL(request):
             else:
                 valid = False
                 table = team
-
+    
     else:
         form = fplIDForm()
     
