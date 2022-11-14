@@ -8,6 +8,10 @@ h1 {
     font-size: 50px;
 }
 
+#passwordDisplay {
+    display: inline;
+}
+
 nav {
     background-color: blue;
     padding: 16px;

@@ -30,16 +30,27 @@
         <input type='submit' value='Submit'>
     </form>
 
-    {% if fplID != "" and email != "" and password != ""%}
-        <h3>FPL ID: {{ fplID }}</h3>
-        <h3>Email: {{ email }}</h3>
-        <h3>Password: {{ password }}</h3>
-    {% endif %}
     <div id='center'>
         <a class='backButton' id='idHelp' href='/MyFPL/fplIDHelp'>How to find my FPL ID?</a>
     </div>
 
+    {% if fplID != "" and email != "" and password != ""%}
+        <h2>Showing team details for account: </h2>
+        <h3>FPL ID: {{ fplID }}</h3>
+        <h3>Email: {{ email }}</h3>
+        <h3 id='passwordDisplay'>Password: </h3>
+        {% for i in password %}
+            <h3 id='passwordDisplay'>*</h3>
+        {% endfor %}
+    {% endif %}
+
     <div id='center'>
-        <h3>{{ teamInfo }}</h3>
+        {% if valid %}
+            {% for i in teamInfo %}
+                <h3>{{ i }}</h3>
+            {% endfor %}
+        {% else %}
+            <h3>{{teamInfo}}</h3>
+        {% endif %}
     </div>
 </body>

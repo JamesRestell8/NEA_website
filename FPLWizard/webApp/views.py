@@ -4,7 +4,9 @@ from django.views import generic
 from django.template import loader
 
 from .forms import fplIDForm
-from .person import User
+from .user import User
+import pandas as pd
+
 
 # Home/Welcome screen
 def index(request):
@@ -23,10 +25,13 @@ def positions(request):
 
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
+
+    # set default values for first visit to the page
     fplID = ""
     email = ""
     password = ""
-    team = ""
+    table = ""
+    valid = True
     if request.method == "POST":
         form = fplIDForm(request.POST)
 
@@ -34,11 +39,17 @@ def myFPL(request):
             fplID = form.cleaned_data["fplID"]
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
-            # this is now a variable holding fplID, which can be used
-            # to retrieve the user's FPL team from the API server
-            # still need to figure out how the API works.
+
+            # Make a new instance of user class, and use method to access FPL team
             user = User(email, password, fplID)
             team = user.getFplTeam()
+
+            if user.isValid():
+            # this line excludes information about bonus chips and transfers which will be needed
+                table = team['picks']
+            else:
+                valid = False
+                table = team
 
     else:
         form = fplIDForm()
@@ -49,11 +60,11 @@ def myFPL(request):
         'form': form,
         'fplID': fplID,
         'email': email,
-        'password': password,
-        'teamInfo': team
+        'password': list(password),
+        'teamInfo': table,
+        'valid': valid
     }
     return HttpResponse(template.render(context, request))
-
 
 
 def goalkeepers(request):
@@ -63,12 +74,14 @@ def goalkeepers(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 def defenders(request):
     template = loader.get_template("webApp/positions.html")
     context = {
         'pageName': 'defenders'
     }
     return HttpResponse(template.render(context, request))
+
 
 def midfielders(request):
     template = loader.get_template("webApp/positions.html")
@@ -77,12 +90,14 @@ def midfielders(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 def attackers(request):
     template = loader.get_template("webApp/positions.html")
     context = {
         'pageName': 'attackers'
     }
     return HttpResponse(template.render(context, request))
+
 
 def fplIDHelp(request):
     template = loader.get_template("webApp/fplIDHelp.html")

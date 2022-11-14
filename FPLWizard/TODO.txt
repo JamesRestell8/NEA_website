@@ -1,1 +1,1 @@
-Next thing to do is get a positions dropdown on the nav menu, and make pages for each link so the site can be properly navigated.
+- Use include html function for the navbar instead of extends, means it can be used for all pages

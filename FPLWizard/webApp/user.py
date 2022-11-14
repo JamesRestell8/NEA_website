@@ -7,6 +7,7 @@ class User():
         self.email = email
         self.password = password
         self.fplID = fplID
+        self.valid = True
     
     def getEmail(self) -> str:
         return self.email
@@ -54,4 +55,11 @@ class User():
         team = session.get(url=urlTeam)
         toPrint = json.loads(team.content)
 
-        return toPrint
+        if team.ok:
+            return toPrint
+        else:
+            self.valid = False
+            return "Invalid FPL login details"
+    
+    def isValid(self):
+        return self.valid
