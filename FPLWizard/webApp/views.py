@@ -7,6 +7,7 @@ from datetime import datetime
 from .forms import fplIDForm
 from .databaseUpdates import DatabaseUpdater
 from .user import User
+from .models import APIIDDictionary
 import pandas as pd
 
 
@@ -32,7 +33,7 @@ def myFPL(request):
     fplID = ""
     email = ""
     password = ""
-    table = ""
+    toPrint = []
     valid = True
     if request.method == "POST":
         form = fplIDForm(request.POST)
@@ -49,6 +50,10 @@ def myFPL(request):
             if user.isValid():
             # this line excludes information about bonus chips and transfers which will be needed
                 table = team['picks']
+                for i in range(len(table)):
+                    num = table[i].get('element')
+                    player = APIIDDictionary.objects.get(fplID=num)
+                    toPrint.append(player.understatName)
             else:
                 valid = False
                 table = team
@@ -56,17 +61,19 @@ def myFPL(request):
     else:
         form = fplIDForm()
     
-    apiIDset = DatabaseUpdater()
+    db = DatabaseUpdater()
 
-    apiIDset.setApiIdDictionary()
+    db.setApiIdDictionary()
+    db.populateAllFPLPlayerStatsByGameweek()
 
+    # variables to send to HTML template
     context = {
         'pageName': "My FPL",
         'form': form,
         'fplID': fplID,
         'email': email,
         'password': list(password),
-        'teamInfo': table,
+        'teamInfo': toPrint,
         'valid': valid
     }
     return HttpResponse(template.render(context, request))

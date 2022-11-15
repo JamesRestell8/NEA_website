@@ -3,8 +3,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 #  A Table to store the data retrieved from the FPL API
 class FPLAPIStatsGameweek(models.Model):
-    # Primary key will be the code that the FPL API uses for the Player
-    fpl_id = models.IntegerField(primary_key=True, verbose_name="FPL ID")
+    # compund primary key will be implemented in the way described below
+    fpl_id = models.IntegerField(default=0, verbose_name="FPL ID")
 
     fpl_fixtureID = models.IntegerField(default=0, verbose_name='Fixture Number')
     fpl_gameweekNumber = models.IntegerField(default=0, verbose_name='Gameweek Number')
