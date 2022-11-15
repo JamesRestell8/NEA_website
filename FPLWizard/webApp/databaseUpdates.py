@@ -6,6 +6,7 @@ import time
 import json
 
 from .models import *
+from FPLWizard.settings import BASE_DIR
 
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
@@ -14,14 +15,9 @@ class DatabaseUpdater():
     # for the convenience of the user, the database should update
     # every day at midnight, so that the most recent fixture results
     # can be added before changes need to be made the next day
-    def __init__(self, firstUpdate: bool):
-        self.firstUpdate = firstUpdate
-        self.time = datetime.datetime()
+    def __init__(self):
+        self.time = datetime.now()
         self.fplURL = "https://fantasy.premierleague.com/api/bootstrap-static/"
-        if len(APIIDDictionary.objects.all()) == 0:
-            self.idSet = False
-        else:
-            self.idSet = True
     
     # need to determine which tables need to be updated live,
     # and which tables can just be left for the whole season
@@ -29,19 +25,15 @@ class DatabaseUpdater():
     # database daily.
 
     def setApiIdDictionary(self):
-        table = pd.read_csv("id_dict.csv")
+    
+        table = pd.read_csv(f"{BASE_DIR}/webApp/id_dict.csv")
         fplIDs = table['FPL_ID']
         understatIDs = table['Understat_ID']
         fplNames = table['FPL_Name']
         understatNames = table['Understat_Name']
-
         for i in range(len(fplIDs)):
             row = APIIDDictionary(playerID=i+1, fplID=fplIDs[i], understatID=understatIDs[i],
                                 fplName=fplNames[i], understatName=understatNames[i])
-            
-            # DONT KNOW IF THIS IS HOW TO DO IT
-            # CHECK ON TWT EXAMPLE WEBSITE/DJANGO CHEAT SHEET
-            # MAKE SURE THIS PROCESS IF ONLY HAPPENING ONCE/IF THERE ARE ANY CHANGES.
             row.save()
 
 

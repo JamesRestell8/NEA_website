@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views import generic
 from django.template import loader
+from datetime import datetime
 
 from .forms import fplIDForm
+from .databaseUpdates import DatabaseUpdater
 from .user import User
 import pandas as pd
 
@@ -54,7 +56,10 @@ def myFPL(request):
     else:
         form = fplIDForm()
     
-    
+    apiIDset = DatabaseUpdater()
+
+    apiIDset.setApiIdDictionary()
+
     context = {
         'pageName': "My FPL",
         'form': form,
