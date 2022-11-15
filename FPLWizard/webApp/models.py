@@ -77,8 +77,8 @@ class APIIDDictionary(models.Model):
     playerID = models.IntegerField(primary_key=True)
     fplID = models.IntegerField(verbose_name="FPL ID")
     understatID = models.IntegerField(verbose_name='Understat ID')
-    fplName = models.CharField(verbose_name="FPL Name")
-    understatName = models.CharField(verbose_name="Understat Name")
+    fplName = models.CharField(max_length=100, verbose_name="FPL Name")
+    understatName = models.CharField(max_length=100, verbose_name="Understat Name")
 
 
 class PlayerTeam(models.Model):

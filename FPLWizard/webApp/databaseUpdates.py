@@ -30,10 +30,19 @@ class DatabaseUpdater():
 
     def setApiIdDictionary(self):
         table = pd.read_csv("id_dict.csv")
+        fplIDs = table['FPL_ID']
+        understatIDs = table['Understat_ID']
+        fplNames = table['FPL_Name']
+        understatNames = table['Understat_Name']
 
-        for row in table.iterrows():
-            # add row to database in correct order, may need to test how iterrows works in empty file
-            pass
+        for i in range(len(fplIDs)):
+            row = APIIDDictionary(playerID=i+1, fplID=fplIDs[i], understatID=understatIDs[i],
+                                fplName=fplNames[i], understatName=understatNames[i])
+            
+            # DONT KNOW IF THIS IS HOW TO DO IT
+            # CHECK ON TWT EXAMPLE WEBSITE/DJANGO CHEAT SHEET
+            # MAKE SURE THIS PROCESS IF ONLY HAPPENING ONCE/IF THERE ARE ANY CHANGES.
+            row.save()
 
 
     def updateFPLTable(self, gameweek: int):
