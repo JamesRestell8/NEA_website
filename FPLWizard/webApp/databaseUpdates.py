@@ -18,11 +18,23 @@ class DatabaseUpdater():
         self.firstUpdate = firstUpdate
         self.time = datetime.datetime()
         self.fplURL = "https://fantasy.premierleague.com/api/bootstrap-static/"
+        if len(APIIDDictionary.objects.all()) == 0:
+            self.idSet = False
+        else:
+            self.idSet = True
     
     # need to determine which tables need to be updated live,
     # and which tables can just be left for the whole season
     # need methods to update and populatre all of the fields in the
     # database daily.
+
+    def setApiIdDictionary(self):
+        table = pd.read_csv("id_dict.csv")
+
+        for row in table.iterrows():
+            # add row to database in correct order, may need to test how iterrows works in empty file
+            pass
+
 
     def updateFPLTable(self, gameweek: int):
         # THIS IS FOR AGGREGATE STATS, NEED TO MAKE ONE FOR SPECIFIC GAMEWEEKS PER PLAYER

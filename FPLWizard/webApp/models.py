@@ -6,6 +6,9 @@ class FPLAPIStatsGameweek(models.Model):
     # Primary key will be the code that the FPL API uses for the Player
     fpl_id = models.IntegerField(primary_key=True, verbose_name="FPL ID")
 
+    fpl_fixtureID = models.IntegerField(default=0, verbose_name='Fixture Number')
+    fpl_gameweekNumber = models.IntegerField(default=0, verbose_name='Gameweek Number')
+
     #  all fields are NOT NULL by default
     fpl_player_name = models.CharField(max_length=100, verbose_name='Player Name')
     fpl_minutes = models.IntegerField(default=0, verbose_name='Minutes')
@@ -23,7 +26,6 @@ class FPLAPIStatsGameweek(models.Model):
     fpl_threat = models.FloatField(verbose_name='Threat')
     fpl_influence = models.FloatField(verbose_name='Influence')
     fpl_creativity = models.FloatField(verbose_name='Creativity')
-    fpl_ppg = models.FloatField(verbose_name='Points Per Game')
 
     def __str__(self):
         return self.fpl_player_name
@@ -75,6 +77,8 @@ class APIIDDictionary(models.Model):
     playerID = models.IntegerField(primary_key=True)
     fplID = models.IntegerField(verbose_name="FPL ID")
     understatID = models.IntegerField(verbose_name='Understat ID')
+    fplName = models.CharField(verbose_name="FPL Name")
+    understatName = models.CharField(verbose_name="Understat Name")
 
 
 class PlayerTeam(models.Model):
