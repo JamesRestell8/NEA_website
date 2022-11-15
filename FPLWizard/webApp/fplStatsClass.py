@@ -9,7 +9,7 @@ class fplStats():
     def __init__(self, fplID: int):
         self.fplID = fplID
         
-        # set defualt values to be populated later from the database
+        # these should all be methods that access the database rather than their own attributes. (applies to both getters and setters)
         self.fplPlayerName = ""
         self.minutes = 0
         self.goals = 0
