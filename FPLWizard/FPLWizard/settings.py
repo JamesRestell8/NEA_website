@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webApp.apps.WebappConfig'
+    'webApp.apps.WebappConfig',
+    'rest_framework',
+    'django_cron',
 ]
 
 MIDDLEWARE = [
@@ -99,6 +101,18 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+CRON_CLASSES = [
+    'webApp.cron.DBCronJobs'
+]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest.framework.permissions.AllowAny',
+    ]
+}
 
 
 # Internationalization

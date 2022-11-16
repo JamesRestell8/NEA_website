@@ -56,15 +56,11 @@ def myFPL(request):
                     toPrint.append(player.understatName)
             else:
                 valid = False
-                table = team
+                toPrint = "Invalid FPL login details"
     
     else:
         form = fplIDForm()
     
-    db = DatabaseUpdater()
-
-    db.setApiIdDictionary()
-    db.populateAllFPLPlayerStatsByGameweek()
 
     # variables to send to HTML template
     context = {

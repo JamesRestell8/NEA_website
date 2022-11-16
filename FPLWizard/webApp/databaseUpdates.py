@@ -25,16 +25,17 @@ class DatabaseUpdater():
     # database daily.
 
     def setApiIdDictionary(self):
-    
-        table = pd.read_csv(f"{BASE_DIR}/webApp/id_dict.csv")
-        fplIDs = table['FPL_ID']
-        understatIDs = table['Understat_ID']
-        fplNames = table['FPL_Name']
-        understatNames = table['Understat_Name']
-        for i in range(len(fplIDs)):
-            row = APIIDDictionary(playerID=i+1, fplID=fplIDs[i], understatID=understatIDs[i],
-                                fplName=fplNames[i], understatName=understatNames[i])
-            row.save()
+        # this function should only run when the table is empty (on initialisation)
+        if len(APIIDDictionary.objects.all()) < 10:
+            table = pd.read_csv(f"{BASE_DIR}/webApp/id_dict.csv")
+            fplIDs = table['FPL_ID']
+            understatIDs = table['Understat_ID']
+            fplNames = table['FPL_Name']
+            understatNames = table['Understat_Name']
+            for i in range(len(fplIDs)):
+                row = APIIDDictionary(playerID=i+1, fplID=fplIDs[i], understatID=understatIDs[i],
+                                    fplName=fplNames[i], understatName=understatNames[i])
+                row.save()
 
 
     def getFPLPlayerStatsByGameweek(self, FPLplayerID: int):
@@ -42,7 +43,10 @@ class DatabaseUpdater():
         x.populateAllGameweeks()
     
     def populateAllFPLPlayerStatsByGameweek(self):
+        # get all players
         ids = APIIDDictionary.objects.all()
+
+        # for each player, get all their gameweeks and add them to the FPLGameweek table in DB
         for entry in ids:
             self.getFPLPlayerStatsByGameweek(entry.fplID)
 
