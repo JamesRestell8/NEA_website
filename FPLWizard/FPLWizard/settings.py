@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webApp.apps.WebappConfig',
     'rest_framework',
-    'django_cron',
+    'background_task'
 ]
 
 MIDDLEWARE = [
