@@ -1,7 +1,9 @@
 import json
 import requests
+from urllib3.exceptions import InsecureRequestWarning
 
 
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 class User():
     def __init__(self, email: str, password: str, fplID: int):
         self.email = email

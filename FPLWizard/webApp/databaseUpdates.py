@@ -43,6 +43,8 @@ class DatabaseUpdater():
         x.populateAllGameweeks()
     
     def populateAllFPLPlayerStatsByGameweek(self):
+        # allow time for id database to fully update
+        time.sleep(10)
         # get all players
         ids = APIIDDictionary.objects.all()
 
@@ -50,5 +52,7 @@ class DatabaseUpdater():
         for entry in ids:
             self.getFPLPlayerStatsByGameweek(entry.fplID)
 
-            
+    def tasksInOrder(self):
+        self.setApiIdDictionary()
+        self.populateAllFPLPlayerStatsByGameweek()
 

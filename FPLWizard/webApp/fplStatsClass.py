@@ -7,6 +7,8 @@ import pandas as pd
 from django.db.models import Max
 
 from .models import FPLAPIStatsGameweek, APIIDDictionary
+from django.core.exceptions import ObjectDoesNotExist
+
 
 # A class that can access a player's stats by gameweek, as well as containing methods to update the FPLAPI database table
 class fplStats():
@@ -79,39 +81,44 @@ class fplStats():
             
             # only update the database if there is a more recent round of fixtures to enter
             
-            # get the record containing the most recent round of fixtures
-            latestRound = FPLAPIStatsGameweek.objects.order_by('-round').first()
-            # use the value of round in that record
-            latestRound = latestRound.round
+            try:
+                # get the record containing the most recent round of fixtures
+                latestRound = FPLAPIStatsGameweek.objects.order_by('-fpl_gameweekNumber').first()
+                # use the value of round in that record
+                latestRound = latestRound.fpl_gameweekNumber
+            except (FPLAPIStatsGameweek.DoesNotExist, AttributeError):
+                latestRound = 0
 
             if int(max(stats['round'])) > latestRound:
                 # TEAM AND POSITION NEED TO BE RETREIVED FROM GENERAL INFORMATION (NEW CLASS AND DATABASE TABLE NEEDED!)
-                #for i in range(len(stats['element'])):
-                    #try: 
-                    #   FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fpl_gameweek=stats['round'][i])
-                    #  needsUpdate = False
+                for i in range(len(stats['element'])):
+                    try: 
+                        FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fpl_gameweekNumber=stats['round'][i])
+                        needsUpdate = False
                     # if no object with playerID and round exists
-                    #except DoesNotExist:
-                        #needsUpdate = True
-                    needsUpdate = True
+                    except FPLAPIStatsGameweek.DoesNotExist:
+                        needsUpdate = True
                     if needsUpdate:
-                        row = FPLAPIStatsGameweek(
-                            fpl_id = self.fplID,
-                            fpl_fixtureID = stats['fixture'][i],
-                            fpl_gameweekNumber = stats['round'][i],
-                            fpl_player_name = APIIDDictionary.objects.get(fplID=self.fplID).fplName,
-                            fpl_minutes = stats['minutes'][i],
-                            fpl_assists = stats['assists'][i],
-                            fpl_goals = stats['goals_scored'][i],
-                            fpl_clean_sheets = stats['clean_sheets'][i],
-                            fpl_goals_conceded = stats['goals_conceded'][i],
-                            fpl_total_points = stats['total_points'][i],
-                            fpl_team = 0,
-                            fpl_position = 0,
-                            fpl_cost = stats['value'][i],
-                            fpl_threat = stats['threat'][i],
-                            fpl_influence = stats['influence'][i],
-                            fpl_creativity = stats['creativity'][i]
-                        )
-                        row.save()
+                        try:
+                            row = FPLAPIStatsGameweek(
+                                fpl_id = self.fplID,
+                                fpl_fixtureID = stats['fixture'][i],
+                                fpl_gameweekNumber = stats['round'][i],
+                                fpl_player_name = APIIDDictionary.objects.get(fplID=self.fplID).fplName,
+                                fpl_minutes = stats['minutes'][i],
+                                fpl_assists = stats['assists'][i],
+                                fpl_goals = stats['goals_scored'][i],
+                                fpl_clean_sheets = stats['clean_sheets'][i],
+                                fpl_goals_conceded = stats['goals_conceded'][i],
+                                fpl_total_points = stats['total_points'][i],
+                                fpl_team = 0,
+                                fpl_position = 0,
+                                fpl_cost = stats['value'][i],
+                                fpl_threat = stats['threat'][i],
+                                fpl_influence = stats['influence'][i],
+                                fpl_creativity = stats['creativity'][i]
+                            )
+                            row.save()
+                        except APIIDDictionary.DoesNotExist:
+                            pass
             

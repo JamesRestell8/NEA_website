@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webApp.apps.WebappConfig',
     'rest_framework',
-    'background_task'
 ]
 
 MIDDLEWARE = [
@@ -100,11 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
-
-
-CRON_CLASSES = [
-    'webApp.cron.DBCronJobs'
 ]
 
 
