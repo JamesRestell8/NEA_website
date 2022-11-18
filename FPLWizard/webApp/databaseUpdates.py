@@ -53,6 +53,9 @@ class DatabaseUpdater():
             self.getFPLPlayerStatsByGameweek(entry.fplID)
 
     def tasksInOrder(self):
+        # executes in less than 20 seconds
         self.setApiIdDictionary()
-        self.populateAllFPLPlayerStatsByGameweek()
 
+        # can take up to 10 minutes when database is empty
+        self.populateAllFPLPlayerStatsByGameweek()
+        print("FPL database done")

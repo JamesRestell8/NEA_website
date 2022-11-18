@@ -89,7 +89,8 @@ class fplStats():
             except (FPLAPIStatsGameweek.DoesNotExist, AttributeError):
                 latestRound = 0
 
-            if int(max(stats['round'])) > latestRound:
+            #if int(max(stats['round'])) > latestRound:
+            if True:
                 # TEAM AND POSITION NEED TO BE RETREIVED FROM GENERAL INFORMATION (NEW CLASS AND DATABASE TABLE NEEDED!)
                 for i in range(len(stats['element'])):
                     try: 
