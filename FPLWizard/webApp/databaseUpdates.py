@@ -47,9 +47,9 @@ class DatabaseUpdater():
         time.sleep(10)
         # get all players
         ids = APIIDDictionary.objects.all()
-
         # for each player, get all their gameweeks and add them to the FPLGameweek table in DB
         for entry in ids:
+            print(entry.fplID)
             self.getFPLPlayerStatsByGameweek(entry.fplID)
 
     def tasksInOrder(self):
@@ -57,5 +57,7 @@ class DatabaseUpdater():
         self.setApiIdDictionary()
 
         # can take up to 10 minutes when database is empty
+        start = time.time()
         self.populateAllFPLPlayerStatsByGameweek()
-        print("FPL database done")
+        end = time.time()
+        print(f"FPL database done in {end - start} seconds")
