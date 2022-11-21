@@ -9,4 +9,4 @@ THE CODE FOR THE NEA PROJECT IS HELD WITHIN "NEA_website/FPLWizard/"
 
 ACKNOWLEDGEMENTS:
 Thanks to github user Vaastav for his dictionary linking FPL IDs to their respective Understat IDs in this project:
-https://github.com/vaastav/Fantasy-Premier-League
+https://github.com/vaastav/Fantasy-Premier-League. His table can be found in "NEA_website/FPLWizard/webApp/id_dict.csv"
