@@ -37,6 +37,7 @@ class UnderstatAPIStatsGameweek(models.Model):
     understat_id = models.IntegerField(primary_key=True, verbose_name='Understat ID')
 
     # player stats below ('XG' = 'Expected Goals')
+    understat_gameweekNumber = models.IntegerField(verbose_name='Gameweek')
     understat_npxg = models.FloatField(verbose_name='Non-penalty xG')
     understat_xG = models.FloatField(verbose_name='xG')
     understat_xA = models.FloatField(verbose_name='xA')
@@ -54,6 +55,7 @@ class Gameweek(models.Model):
     def __str__(self):
         return "Gameweek " + str(self.gameweekNumber)
 
+
 class Team(models.Model):
     teamID = models.IntegerField(primary_key=True)
     teamName = models.CharField(max_length=100)
@@ -61,6 +63,7 @@ class Team(models.Model):
 
     def __str__(self):
         return self.teamName
+
 
 class Fixture(models.Model):
     fixtureID = models.IntegerField(primary_key=True)

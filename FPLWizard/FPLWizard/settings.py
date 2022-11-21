@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# variable holding the current season for the website, using year the season STARTED (i.e. 2022-23 season is "2022")
+CURRENT_SEASON = 2022
 
 # Application definition
 

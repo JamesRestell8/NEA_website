@@ -3,19 +3,14 @@ import time
 from requests import ConnectionError
 import pandas as pd
 
-# used to find max value of a column in a table
-from django.db.models import Max
-
 from .models import FPLAPIStatsGameweek, APIIDDictionary
-from django.core.exceptions import ObjectDoesNotExist
 
 
 # A class that can access a player's stats by gameweek, as well as containing methods to update the FPLAPI database table
-class fplStats():
+class FPLStats():
     def __init__(self, fplID: int):
         self.fplID = fplID
         
-
     def getPlayerName(self):
         return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID).fpl_player_name
 
@@ -84,7 +79,7 @@ class fplStats():
             # BROKEN - LATEST ROUND VARIABLE IS NEVER CORRECT, SO DATABASE IS DUPLICATING VALUES (ONCE THIS IS FIXED DOUBLE CHECK LINES 98-105)
             try:
                 # get the record containing the most recent round of fixtures
-                latestRound = FPLAPIStatsGameweek.objects.filter(fplID=self.fpl_id).order_by('-fpl_gameweekNumber').first()
+                latestRound = FPLAPIStatsGameweek.objects.filter(fpl_id=self.fplID).order_by('-fpl_gameweekNumber').first()
                 # use the value of round in that record
                 latestRound = latestRound.fpl_gameweekNumber
             except (FPLAPIStatsGameweek.DoesNotExist, AttributeError):

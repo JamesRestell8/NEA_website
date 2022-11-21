@@ -7,7 +7,7 @@ import json
 
 from .models import *
 from FPLWizard.settings import BASE_DIR
-from .fplStatsClass import fplStats
+from .fplStatsClass import FPLStats
 
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
@@ -39,7 +39,7 @@ class DatabaseUpdater():
 
 
     def getFPLPlayerStatsByGameweek(self, FPLplayerID: int):
-        x = fplStats(FPLplayerID)
+        x = FPLStats(FPLplayerID)
         x.populateAllGameweeks()
     
     def populateAllFPLPlayerStatsByGameweek(self):
