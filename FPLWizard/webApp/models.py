@@ -36,8 +36,9 @@ class UnderstatAPIStatsGameweek(models.Model):
     # primary key will be the ID that the understat API uses to refer to the player
     understat_id = models.IntegerField(primary_key=True, verbose_name='Understat ID')
 
+    understat_playerName = models.CharField(max_length=100, verbose_name = "Understat Name")
     # player stats below ('XG' = 'Expected Goals')
-    understat_gameweekNumber = models.IntegerField(verbose_name='Gameweek')
+    understat_fixtureID = models.IntegerField(verbose_name='Gameweek')
     understat_npxg = models.FloatField(verbose_name='Non-penalty xG')
     understat_xG = models.FloatField(verbose_name='xG')
     understat_xA = models.FloatField(verbose_name='xA')

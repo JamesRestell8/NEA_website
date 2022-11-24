@@ -53,14 +53,54 @@ class UnderstatStats():
     
     def populateAllGameweeks(self):
         # NOT COMPLETE YET, TEST THIS IN A JUPYTER NOTEBOOK I WOULD SO YOU KNOW EXACTLY WHAT YOU'RE DEALING WITH.
-        async def main():
+        async def main(understatID: int):
             async with aiohttp.ClientSession() as session:
+                print("in loop")
                 understat = Understat(session)
 
                 player_matches = await understat.get_player_matches(
-                    self.understatID, season=CURRENT_SEASON
-                )
-                return json.dumps(player_matches)
+                            understatID, season="2022")
+            return (json.dumps(player_matches))
         
+
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+        data = loop.run_until_complete(main(482))
+
+        data = pd.read_json(data)
+        data = data[['goals', 'shots', 'time', 'xG', 'h_team', 'h_goals', 
+                    'a_team', 'a_goals', 'date', 'id', 'xA', 'assists',
+                    'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
+
+        try:
+            latestRound = UnderstatAPIStatsGameweek.objects.filter(fpl_id=self.fplID).order_by('-id').first()
+            latestRound = latestRound.id
+        except (UnderstatAPIStatsGameweek.DoesNotExist, AttributeError):
+            latestRound = 0
+        
+        if int(max(data['round'])) > latestRound:
+            for i in range(len(data['goals'])):
+                if data['id'][i] <= latestRound:
+                    try:
+                        UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=data['id'][i])
+                        needsUpdate = False
+                    except UnderstatAPIStatsGameweek.DoesNotExist:
+                        needsUpdate = True
+                else:
+                    needsUpdate = True
+                
+                if needsUpdate:
+                    row = UnderstatAPIStatsGameweek(
+                        understat_id = self.understatID,
+                        understat_playerName = APIIDDictionary.objects.get(fplID=self.fplID).understatName,
+                        understat_fixtureID = data['id'][i],
+                        understat_npxg = data['npxG'][i],
+                        understat_xG = data['xG'][i],
+                        understat_xA = data['xA'][i],
+                        understat_key_passes = data['key_passes'][i],
+                        understat_xG_chain = data['xGChain'][i],
+                        understat_xG_buildup = data['xGBuildup'][i],
+                        understat_shots = data['shots'][i],
+                        understat_yellow_cards = data['yellow_cards'][i]
+                    )
+                    row.save()
+        print(data.sort_values(by='date', ascending=True).head())
