@@ -72,7 +72,7 @@ class FPLStats():
             stats = stats[['element', 'fixture',
             'total_points','round', 'minutes', 'goals_scored', 'assists', 
             'clean_sheets', 'goals_conceded', 'influence', 
-            'creativity', 'threat', 'value']]
+            'creativity', 'threat', 'value', 'yellow_cards']]
             
             # only update the database if there is a more recent round of fixtures to enter
             
@@ -113,6 +113,7 @@ class FPLStats():
                             fpl_total_points = stats['total_points'][i],
                             fpl_team = 0,
                             fpl_position = 0,
+                            fpl_yellow_cards = stats['yellow_cards'][i],
                             fpl_cost = stats['value'][i],
                             fpl_threat = stats['threat'][i],
                             fpl_influence = stats['influence'][i],

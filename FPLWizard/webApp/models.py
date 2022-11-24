@@ -21,7 +21,7 @@ class FPLAPIStatsGameweek(models.Model):
     fpl_team = models.IntegerField(verbose_name='Team', validators=[MinValueValidator(0), MaxValueValidator(21)]) 
     # should be a number 1-4
     fpl_position = models.IntegerField(verbose_name='Position', validators=[MinValueValidator(0), MaxValueValidator(5)]) 
-
+    fpl_yellow_cards = models.IntegerField(verbose_name="Yellow Cards", default=0)
     fpl_cost = models.FloatField(verbose_name='Cost')
     fpl_threat = models.FloatField(verbose_name='Threat')
     fpl_influence = models.FloatField(verbose_name='Influence')
@@ -38,7 +38,7 @@ class UnderstatAPIStatsGameweek(models.Model):
 
     understat_playerName = models.CharField(max_length=100, verbose_name = "Understat Name")
     # player stats below ('XG' = 'Expected Goals')
-    understat_fixtureID = models.IntegerField(verbose_name='Gameweek')
+    understat_fixtureID = models.IntegerField(default=0, verbose_name='Gameweek')
     understat_npxg = models.FloatField(verbose_name='Non-penalty xG')
     understat_xG = models.FloatField(verbose_name='xG')
     understat_xA = models.FloatField(verbose_name='xA')
@@ -46,8 +46,6 @@ class UnderstatAPIStatsGameweek(models.Model):
     understat_xG_chain = models.FloatField(verbose_name='xG Chain')
     understat_xG_buildup = models.FloatField(verbose_name='xG Buildup')
     understat_shots = models.IntegerField(verbose_name='Shots')
-    understat_yellow_cards = models.IntegerField(verbose_name='Yellow Cards')
-
 
 class Gameweek(models.Model):
     gameweekNumber = models.IntegerField(primary_key=True, verbose_name='Gameweek No.')

@@ -16,7 +16,6 @@ from .models import APIIDDictionary, UnderstatAPIStatsGameweek
 from FPLWizard.settings import CURRENT_SEASON
 
 # initialise nest_asyncio, which allows asynchronous functions to be nested
-nest_asyncio.apply()
 
 class UnderstatStats():
     def __init__(self, understatID: int):
@@ -57,16 +56,14 @@ class UnderstatStats():
             async with aiohttp.ClientSession() as session:
                 print("in loop")
                 understat = Understat(session)
-
                 player_matches = await understat.get_player_matches(
                             understatID, season="2022")
             return (json.dumps(player_matches))
         
 
-        loop = asyncio.get_event_loop()
-        data = loop.run_until_complete(main(482))
+        loop = asyncio.run((main(self.understatID)))
 
-        data = pd.read_json(data)
+        data = pd.read_json(loop)
         data = data[['goals', 'shots', 'time', 'xG', 'h_team', 'h_goals', 
                     'a_team', 'a_goals', 'date', 'id', 'xA', 'assists',
                     'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
@@ -77,7 +74,7 @@ class UnderstatStats():
         except (UnderstatAPIStatsGameweek.DoesNotExist, AttributeError):
             latestRound = 0
         
-        if int(max(data['round'])) > latestRound:
+        if int(max(data['id'])) > latestRound:
             for i in range(len(data['goals'])):
                 if data['id'][i] <= latestRound:
                     try:
@@ -91,7 +88,7 @@ class UnderstatStats():
                 if needsUpdate:
                     row = UnderstatAPIStatsGameweek(
                         understat_id = self.understatID,
-                        understat_playerName = APIIDDictionary.objects.get(fplID=self.fplID).understatName,
+                        understat_playerName = APIIDDictionary.objects.get(fplID=self.understatID).understatName,
                         understat_fixtureID = data['id'][i],
                         understat_npxg = data['npxG'][i],
                         understat_xG = data['xG'][i],
@@ -100,7 +97,5 @@ class UnderstatStats():
                         understat_xG_chain = data['xGChain'][i],
                         understat_xG_buildup = data['xGBuildup'][i],
                         understat_shots = data['shots'][i],
-                        understat_yellow_cards = data['yellow_cards'][i]
                     )
                     row.save()
-        print(data.sort_values(by='date', ascending=True).head())

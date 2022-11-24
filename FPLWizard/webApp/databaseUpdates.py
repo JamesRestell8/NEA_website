@@ -8,6 +8,7 @@ import json
 from .models import *
 from FPLWizard.settings import BASE_DIR
 from .fplStatsClass import FPLStats
+from .understatClass import UnderstatStats
 
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
@@ -49,8 +50,21 @@ class DatabaseUpdater():
         ids = APIIDDictionary.objects.all()
         # for each player, get all their gameweeks and add them to the FPLGameweek table in DB
         for entry in ids:
-            print(entry.fplID)
+            print(f"added fpl player {entry.fplID}")
             self.getFPLPlayerStatsByGameweek(entry.fplID)
+
+    def getUnderstatPlayerStatsByGameweek(self, understatID: int):
+        x = UnderstatStats(understatID)
+        x.populateAllGameweeks()
+
+    def populateAllUnderstatPlayerStatsByGameweek(self):
+        time.sleep(10)
+
+        ids = APIIDDictionary.objects.all()
+
+        for entry in ids:
+            print(f"added understat player {entry.understatID}")
+            self.getUnderstatPlayerStatsByGameweek(entry.understatID)
 
     def tasksInOrder(self):
         # executes in less than 20 seconds
@@ -61,3 +75,8 @@ class DatabaseUpdater():
         self.populateAllFPLPlayerStatsByGameweek()
         end = time.time()
         print(f"FPL database done in {end - start} seconds")
+
+        start = time.time()
+        self.populateAllUnderstatPlayerStatsByGameweek()
+        end = time.time()
+        print(f"Understat database done in {end - start} seconds")
