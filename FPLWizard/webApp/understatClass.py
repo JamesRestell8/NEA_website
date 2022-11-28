@@ -6,6 +6,7 @@ import asyncio
 import json
 import aiohttp
 import nest_asyncio
+import sys
 
 from pandas.io.json import json_normalize
 
@@ -51,7 +52,10 @@ class UnderstatStats():
         return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_yellow_cards
     
     def populateAllGameweeks(self):
-        # NOT COMPLETE YET, TEST THIS IN A JUPYTER NOTEBOOK I WOULD SO YOU KNOW EXACTLY WHAT YOU'RE DEALING WITH.
+        # code to fix an issue with asyncio package found here: https://github.com/encode/httpx/issues/914
+        if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
         async def main(understatID: int):
             async with aiohttp.ClientSession() as session:
                 print("in loop")
@@ -64,9 +68,7 @@ class UnderstatStats():
         loop = asyncio.run((main(self.understatID)))
 
         data = pd.read_json(loop)
-        data = data[['goals', 'shots', 'time', 'xG', 'h_team', 'h_goals', 
-                    'a_team', 'a_goals', 'date', 'id', 'xA', 'assists',
-                    'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
+        data = data[['shots', 'xG', 'id', 'xA', 'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
 
         try:
             latestRound = UnderstatAPIStatsGameweek.objects.filter(fpl_id=self.fplID).order_by('-id').first()
@@ -75,7 +77,7 @@ class UnderstatStats():
             latestRound = 0
         
         if int(max(data['id'])) > latestRound:
-            for i in range(len(data['goals'])):
+            for i in range(len(data['id'])):
                 if data['id'][i] <= latestRound:
                     try:
                         UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=data['id'][i])
@@ -88,7 +90,7 @@ class UnderstatStats():
                 if needsUpdate:
                     row = UnderstatAPIStatsGameweek(
                         understat_id = self.understatID,
-                        understat_playerName = APIIDDictionary.objects.get(fplID=self.understatID).understatName,
+                        understat_playerName = APIIDDictionary.objects.get(understatID=self.understatID).understatName,
                         understat_fixtureID = data['id'][i],
                         understat_npxg = data['npxG'][i],
                         understat_xG = data['xG'][i],
