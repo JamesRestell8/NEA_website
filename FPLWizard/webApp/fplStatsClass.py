@@ -76,7 +76,6 @@ class FPLStats():
             
             # only update the database if there is a more recent round of fixtures to enter
             
-            # BROKEN - LATEST ROUND VARIABLE IS NEVER CORRECT, SO DATABASE IS DUPLICATING VALUES (ONCE THIS IS FIXED DOUBLE CHECK LINES 98-105)
             try:
                 # get the record containing the most recent round of fixtures
                 latestRound = FPLAPIStatsGameweek.objects.filter(fpl_id=self.fplID).order_by('-fpl_gameweekNumber').first()

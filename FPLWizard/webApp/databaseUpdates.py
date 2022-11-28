@@ -70,13 +70,13 @@ class DatabaseUpdater():
         # executes in less than 20 seconds
         self.setApiIdDictionary()
 
+        # start = time.time()
+        # self.populateAllUnderstatPlayerStatsByGameweek()
+        # end = time.time()
+        # print(f"Understat database done in {end - start} seconds")
+
         # can take up to 10 minutes when database is empty
         start = time.time()
         self.populateAllFPLPlayerStatsByGameweek()
         end = time.time()
         print(f"FPL database done in {end - start} seconds")
-
-        start = time.time()
-        self.populateAllUnderstatPlayerStatsByGameweek()
-        end = time.time()
-        print(f"Understat database done in {end - start} seconds")

@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+import pause
 
 class WebappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -19,5 +20,4 @@ class WebappConfig(AppConfig):
         scheduler.add_job(db.tasksInOrder, 'interval', minutes=30, next_run_time=datetime.now())
 
         scheduler.start()
-
         
