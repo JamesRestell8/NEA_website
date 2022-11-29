@@ -71,7 +71,7 @@ class UnderstatStats():
         data = data[['shots', 'xG', 'id', 'xA', 'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
 
         try:
-            latestRound = UnderstatAPIStatsGameweek.objects.filter(fpl_id=self.fplID).order_by('-id').first()
+            latestRound = UnderstatAPIStatsGameweek.objects.filter(understat_id=self.understatID).order_by('-understat_fixtureID').first()
             latestRound = latestRound.id
         except (UnderstatAPIStatsGameweek.DoesNotExist, AttributeError):
             latestRound = 0
