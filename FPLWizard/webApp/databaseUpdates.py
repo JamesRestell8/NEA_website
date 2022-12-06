@@ -44,8 +44,9 @@ class DatabaseUpdater():
         x.populateAllGameweeks()
     
     def populateAllFPLPlayerStatsByGameweek(self):
-        # allow time for id database to fully update
-        time.sleep(10)
+        # time delay to allow for admin tasks in terminal
+        time.sleep(5)
+
         # get all players
         ids = APIIDDictionary.objects.all()
         # for each player, get all their gameweeks and add them to the FPLGameweek table in DB
@@ -58,8 +59,8 @@ class DatabaseUpdater():
         x.populateAllGameweeks()
 
     def populateAllUnderstatPlayerStatsByGameweek(self):
-        time.sleep(10)
-
+        # time delay to allow for admin tasks in terminal
+        time.sleep(5)
         ids = APIIDDictionary.objects.all()
 
         for entry in ids:
@@ -67,15 +68,18 @@ class DatabaseUpdater():
             self.getUnderstatPlayerStatsByGameweek(entry.understatID)
 
     def tasksInOrder(self):
+        # time delay to allow time to perform admin tasks in the terminal before print statements
+        time.sleep(10)
         # executes in less than 20 seconds
         self.setApiIdDictionary()
 
+        # ~10 mins
         start = time.time()
         self.populateAllUnderstatPlayerStatsByGameweek()
         end = time.time()
         print(f"Understat database done in {end - start} seconds")
 
-        # can take up to 10 minutes when database is empty
+        # ~ 5 mins
         start = time.time()
         self.populateAllFPLPlayerStatsByGameweek()
         end = time.time()

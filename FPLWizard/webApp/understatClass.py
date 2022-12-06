@@ -64,11 +64,14 @@ class UnderstatStats():
                             understatID, season="2022")
             return (json.dumps(player_matches))
         
-
         loop = asyncio.run((main(self.understatID)))
 
         data = pd.read_json(loop)
-        data = data[['shots', 'xG', 'id', 'xA', 'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
+        try:
+            data = data[['shots', 'xG', 'id', 'xA', 'key_passes', 'npxG', 'xGChain', 'xGBuildup']]
+        except KeyError: 
+            print(data.columns)
+            return
 
         try:
             latestRound = UnderstatAPIStatsGameweek.objects.filter(understat_id=self.understatID).order_by('-understat_fixtureID').first()
@@ -80,14 +83,14 @@ class UnderstatStats():
             for i in range(len(data['id'])):
                 if data['id'][i] <= latestRound:
                     try:
-                        UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=data['id'][i])
+                        UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_fixtureID=data['id'][i])
                         needsUpdate = False
                     except UnderstatAPIStatsGameweek.DoesNotExist:
                         needsUpdate = True
                 else:
                     needsUpdate = True
-                
                 if needsUpdate:
+                    print("adding row...")
                     row = UnderstatAPIStatsGameweek(
                         understat_id = self.understatID,
                         understat_playerName = APIIDDictionary.objects.get(understatID=self.understatID).understatName,

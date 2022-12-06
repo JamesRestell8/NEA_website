@@ -18,6 +18,5 @@ class WebappConfig(AppConfig):
 
         # DatabaseUpdater function that runs all the required functions in order
         scheduler.add_job(db.tasksInOrder, 'interval', minutes=30, next_run_time=datetime.now())
-
         scheduler.start()
         

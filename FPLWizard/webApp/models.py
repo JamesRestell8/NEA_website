@@ -33,12 +33,12 @@ class FPLAPIStatsGameweek(models.Model):
 
 # A table to store player data retrieved from the understat API. Similar function to the table above
 class UnderstatAPIStatsGameweek(models.Model):
-    # primary key will be the ID that the understat API uses to refer to the player
-    understat_id = models.IntegerField(primary_key=True, verbose_name='Understat ID')
+
+    understat_id = models.IntegerField(default=0, verbose_name='Understat ID')
+    understat_fixtureID = models.IntegerField(default=0, verbose_name='Gameweek')
 
     understat_playerName = models.CharField(max_length=100, verbose_name = "Understat Name")
     # player stats below ('XG' = 'Expected Goals')
-    understat_fixtureID = models.IntegerField(default=0, verbose_name='Gameweek')
     understat_npxg = models.FloatField(verbose_name='Non-penalty xG')
     understat_xG = models.FloatField(verbose_name='xG')
     understat_xA = models.FloatField(verbose_name='xA')
