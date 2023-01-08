@@ -24,33 +24,20 @@
         <a href="/MyFPL">My FPL</a>
     </nav>
 
-    <form action='/MyFPL/' method='post'>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type='submit' value='Submit'>
-    </form>
-
     <div id='center'>
-        <a class='backButton' id='idHelp' href='/MyFPL/fplIDHelp'>How to find my FPL ID?</a>
+        <h1>FPLWizard's My FPL</h1>
+        <h4>Once you have filled in the form below, press "find transfers".</h4>
+        <h4>Full instructions can be found <a id='inline-link' href='/MyFPL/fplIDHelp'>here</a></h4>
     </div>
+    
 
-    {% if fplID != "" and email != "" and password != ""%}
-        <h2>Showing team details for account: </h2>
-        <h3>FPL ID: {{ fplID }}</h3>
-        <h3>Email: {{ email }}</h3>
-        <h3 id='passwordDisplay'>Password: </h3>
-        {% for i in password %}
-            <h3 id='passwordDisplay'>*</h3>
-        {% endfor %}
-    {% endif %}
+    <p><a href="/webApp"> Return to Home </a></p>
 
-    <div id='center'>
-        {% if valid %}
-            {% for i in teamInfo %}
-                <h3>{{ i }}</h3>
-            {% endfor %}
-        {% else %}
-            <h3>{{teamInfo}}</h3>
-        {% endif %}
-    </div>
+    <ul>
+    {% for item in content %}
+        <li>
+            <h3>{{ item }}</h3>
+        </li>
+    {% endfor %}
+    </ul>
 </body>

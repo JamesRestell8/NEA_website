@@ -43,6 +43,7 @@ class DatabaseUpdater():
         x = FPLStats(FPLplayerID)
         x.populateAllGameweeks()
     
+    # NOTE: the FPL API will return all player gameweeks, even if they didn't feature. Understat only keeps records of player gameweeks where the player featured.
     def populateAllFPLPlayerStatsByGameweek(self):
         # time delay to allow for admin tasks in terminal
         time.sleep(5)
@@ -73,14 +74,13 @@ class DatabaseUpdater():
         # executes in less than 20 seconds
         self.setApiIdDictionary()
 
-        # ~10 mins
-        start = time.time()
-        self.populateAllUnderstatPlayerStatsByGameweek()
-        end = time.time()
-        print(f"Understat database done in {end - start} seconds")
-
         # ~ 5 mins
         start = time.time()
         self.populateAllFPLPlayerStatsByGameweek()
         end = time.time()
         print(f"FPL database done in {end - start} seconds")
+        # ~10 mins
+        #start = time.time()
+        #self.populateAllUnderstatPlayerStatsByGameweek()
+        #end = time.time()
+        #print(f"Understat database done in {end - start} seconds")

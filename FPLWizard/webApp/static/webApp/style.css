@@ -145,3 +145,19 @@ input[type=submit]:hover {
         transform: scale(1);
     }
 }
+
+#inline-link {
+    all: unset;
+}
+
+#inline-link:link {
+    text-decoration: underline;
+}
+
+#inline-link:hover {
+    animation: pulse 2s;
+    transition: 0.3s;
+    background: black;
+    color: white;
+    cursor: pointer;
+}

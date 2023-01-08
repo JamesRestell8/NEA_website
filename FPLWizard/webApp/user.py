@@ -50,13 +50,16 @@ class User():
             'app': 'plfpl-web'
         }
 
+        print(data)
         session.post(url=urlLogin, data=data, headers=headers)
 
         # now the session has been authenticated, we can request the user's team
         urlTeam = "https://fantasy.premierleague.com/api/my-team/" + str(self.fplID)
         team = session.get(url=urlTeam)
         toPrint = json.loads(team.content)
-
+        print(team)
+        print("")
+        print(team.ok)
         if team.ok:
             return toPrint
         else:
