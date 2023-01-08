@@ -1,24 +1,13 @@
 import json
 import requests
 from urllib3.exceptions import InsecureRequestWarning
-
+from .models import APIIDDictionary
 
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 class User():
-    def __init__(self, email: str, password: str, fplID: int):
-        self.email = email
-        self.password = password
-        self.fplID = fplID
+    def __init__(self, team: list):
+        self.team = team
         self.valid = True
-    
-    def getEmail(self) -> str:
-        return self.email
-    
-    def getPassword(self) -> str:
-        return self.password
-    
-    def getFplID(self) -> int:
-        return self.fplID
     
     def getFplTeam(self) -> str:
         session = requests.Session()
@@ -67,4 +56,9 @@ class User():
             return "Invalid FPL login details"
     
     def isValid(self):
-        return self.valid
+        for player in self.team:
+            try:
+                APIIDDictionary.objects.get(fplName=player)
+            except APIIDDictionary.DoesNotExist:
+                return False
+        return True
