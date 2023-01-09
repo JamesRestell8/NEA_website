@@ -26,7 +26,7 @@ class FPLStats():
     def getPlayerTotalPoints(self, gameweek: int):
         return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_total_points
     
-    # This still needs to include gameweek to acocunt for interleague transfers occuring in the january transfer window
+    # This still needs to include gameweek to account for interleague transfers occuring in the january transfer window
     def getPlayerTeamID(self, gameweek: int):
         return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_team
 

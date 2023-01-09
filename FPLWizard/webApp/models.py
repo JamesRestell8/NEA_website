@@ -58,7 +58,6 @@ class Gameweek(models.Model):
 class Team(models.Model):
     teamID = models.IntegerField(primary_key=True)
     teamName = models.CharField(max_length=100)
-    leaguePos = models.IntegerField(verbose_name='League Position', validators=[MinValueValidator(0),MaxValueValidator(21)])
 
     def __str__(self):
         return self.teamName

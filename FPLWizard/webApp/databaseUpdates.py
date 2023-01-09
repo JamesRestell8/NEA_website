@@ -9,6 +9,7 @@ from .models import *
 from FPLWizard.settings import BASE_DIR
 from .fplStatsClass import FPLStats
 from .understatClass import UnderstatStats
+from .team import TeamUpdater
 
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
@@ -68,17 +69,24 @@ class DatabaseUpdater():
             print(f"added understat player {entry.understatID}")
             self.getUnderstatPlayerStatsByGameweek(entry.understatID)
 
+    def updateTeamTable(self):
+        updater = TeamUpdater()
+        updater.populateDatabase()
+
     def tasksInOrder(self):
         # time delay to allow time to perform admin tasks in the terminal before print statements
         time.sleep(10)
         # executes in less than 20 seconds
         self.setApiIdDictionary()
+        print("ID dictionary done", end='\n')
+        self.updateTeamTable()
+        print("teams updated")
 
         # ~ 5 mins
-        start = time.time()
-        self.populateAllFPLPlayerStatsByGameweek()
-        end = time.time()
-        print(f"FPL database done in {end - start} seconds")
+        #start = time.time()
+        #self.populateAllFPLPlayerStatsByGameweek()
+        #end = time.time()
+        #print(f"FPL database done in {end - start} seconds")
         # ~10 mins
         #start = time.time()
         #self.populateAllUnderstatPlayerStatsByGameweek()
