@@ -10,6 +10,7 @@ from FPLWizard.settings import BASE_DIR
 from .fplStatsClass import FPLStats
 from .understatClass import UnderstatStats
 from .team import TeamUpdater
+from .fixture import FixtureUpdater
 
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
@@ -73,6 +74,10 @@ class DatabaseUpdater():
         updater = TeamUpdater()
         updater.populateDatabase()
 
+    def updateFixtureTable(self):
+        updater = FixtureUpdater()
+        updater.populateDatabase()
+
     def tasksInOrder(self):
         # time delay to allow time to perform admin tasks in the terminal before print statements
         time.sleep(10)
@@ -80,8 +85,9 @@ class DatabaseUpdater():
         self.setApiIdDictionary()
         print("ID dictionary done", end='\n')
         self.updateTeamTable()
-        print("teams updated")
-
+        print("teams updated", end="\n")
+        self.updateFixtureTable()
+        print("Fixtures done", end='\n')
         # ~ 5 mins
         #start = time.time()
         #self.populateAllFPLPlayerStatsByGameweek()

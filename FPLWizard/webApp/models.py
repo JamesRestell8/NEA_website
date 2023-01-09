@@ -58,8 +58,8 @@ class Team(models.Model):
 
 class Fixture(models.Model):
     fixtureID = models.IntegerField(primary_key=True)
-    homeTeamID = models.ForeignKey(Team, verbose_name='Home Team ID', on_delete=models.CASCADE, related_name="homeTeamID")
-    awayTeamID = models.ForeignKey(Team, verbose_name='Away Team ID', on_delete=models.CASCADE, related_name="awayTeamID")
+    homeTeamID = models.IntegerField(verbose_name='Home Team ID')
+    awayTeamID = models.IntegerField(verbose_name='Away Team ID')
     homeTeamStrength = models.IntegerField(verbose_name="Home Team Strength")
     awayTeamStrength = models.IntegerField(verbose_name="Away Team Strength")
     homeTeamGoals = models.IntegerField(verbose_name="Home Team Goals")
@@ -104,8 +104,3 @@ class XPGameweek(models.Model):
 
     xP = models.FloatField(verbose_name='Expected Points')
     formCoefficient = models.FloatField(verbose_name='Form coefficient')
-
-
-class timeManager(models.Model):
-    timeID = models.IntegerField(primary_key=True)
-    lastModified = models.DateTimeField(auto_now_add=True)
