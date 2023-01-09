@@ -47,13 +47,6 @@ class UnderstatAPIStatsGameweek(models.Model):
     understat_xG_buildup = models.FloatField(verbose_name='xG Buildup')
     understat_shots = models.IntegerField(verbose_name='Shots')
 
-class Gameweek(models.Model):
-    gameweekNumber = models.IntegerField(primary_key=True, verbose_name='Gameweek No.')
-    endDeadline = models.DateTimeField()
-
-    def __str__(self):
-        return "Gameweek " + str(self.gameweekNumber)
-
 
 class Team(models.Model):
     teamID = models.IntegerField(primary_key=True)
@@ -71,7 +64,7 @@ class Fixture(models.Model):
     awayTeamStrength = models.IntegerField(verbose_name="Away Team Strength")
     homeTeamGoals = models.IntegerField(verbose_name="Home Team Goals")
     awayTeamGoals = models.IntegerField(verbose_name="Away Team Goals")
-    gameweekNumber = models.ForeignKey(Gameweek, verbose_name='Gameweek', on_delete=models.CASCADE)
+    gameweekNumber = models.IntegerField(verbose_name='Gameweek')
 
 
 class APIIDDictionary(models.Model):
@@ -106,7 +99,7 @@ class XPGameweek(models.Model):
     # using same composite foreign primary key method as in PlayerTeam table
     num = models.IntegerField(primary_key=True)
 
-    gameweekNumber = models.ForeignKey(Gameweek, verbose_name='Gameweek', on_delete=models.CASCADE)
+    gameweekNumber = models.IntegerField(verbose_name='Gameweek')
     playerID = models.ForeignKey(APIIDDictionary, verbose_name='Player ID', on_delete=models.CASCADE)
 
     xP = models.FloatField(verbose_name='Expected Points')
