@@ -11,6 +11,7 @@ from .fplStatsClass import FPLStats
 from .understatClass import UnderstatStats
 from .team import TeamUpdater
 from .fixture import FixtureUpdater
+from .fplGeneralInfo import PlayerGeneralInfoUpdater
 
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
@@ -78,6 +79,10 @@ class DatabaseUpdater():
         updater = FixtureUpdater()
         updater.populateDatabase()
 
+    def updateGeneralInfo(self):
+        updater = PlayerGeneralInfoUpdater()
+        updater.populateDatabase()
+
     def tasksInOrder(self):
         # time delay to allow time to perform admin tasks in the terminal before print statements
         time.sleep(10)
@@ -88,6 +93,8 @@ class DatabaseUpdater():
         print("teams updated", end="\n")
         self.updateFixtureTable()
         print("Fixtures done", end='\n')
+        self.updateGeneralInfo()
+        print("General info updated", end='\n')
         # ~ 5 mins
         #start = time.time()
         #self.populateAllFPLPlayerStatsByGameweek()

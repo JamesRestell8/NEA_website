@@ -49,11 +49,12 @@ class FixtureUpdater():
             try:
                 existingRecord = Fixture.objects.get(fixtureID=int(fixtures['id'][i]))
                 existingGameweek = existingRecord.gameweekNumber
-                if existingGameweek != int(fixtures['event'][i]):
+                if existingGameweek != gameweekNumber:
                     existingRecord.gameweekNumber = int(fixtures['event'][i])
                     needsUpdate = False
                 else:
                     needsUpdate = False
+                existingRecord.save()
             except Fixture.DoesNotExist:
                 # if the fixture doesn't exist yet, add it.
                 pass

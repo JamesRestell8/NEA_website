@@ -75,14 +75,13 @@ class APIIDDictionary(models.Model):
     understatName = models.CharField(max_length=100, verbose_name="Understat Name")
 
 
-class PlayerTeam(models.Model):
-    # django doesn't have support for composite foreign primary keys, so we will make an 
-    # id column which will auto_increment, and let the other two just be foreign keys,
-    # making this a de-facto composite foreign primary key.
-    num = models.IntegerField(primary_key=True)
-    playerID = models.ForeignKey(APIIDDictionary, verbose_name="Player ID", on_delete=models.CASCADE) 
-    # on_delete = models.CASCADE means if the foreign object is deleted, the child object is also deleted
-    teamID = models.ForeignKey(Team, verbose_name='Team ID', on_delete=models.CASCADE)
+class PlayerTeamAndPosition(models.Model):
+    # FPL IDs used here
+    playerID = models.IntegerField(primary_key=True, verbose_name="Player ID")
+    # Team IDs used here from Team table
+    teamID = models.IntegerField(verbose_name='Team ID')
+    # position 1=GK, 2=DEF, 3=MID, 4=ATT
+    position = models.IntegerField(verbose_name="Position")
 
     def __str__(self):
         return self.playerID + " - " + self.teamID
