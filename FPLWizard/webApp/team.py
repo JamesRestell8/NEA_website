@@ -41,6 +41,7 @@ class TeamUpdater():
             except Team.DoesNotExist:
                 row = Team(
                     teamID=currentTeam,
-                    teamName=currentName
+                    teamName=currentName,
+                    teamStrength=0
                     )
                 row.save()

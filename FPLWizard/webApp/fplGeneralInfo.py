@@ -46,6 +46,7 @@ class PlayerGeneralInfoUpdater():
                 row = PlayerTeamAndPosition(
                     playerID=info['id'][i],
                     teamID=info['team'][i],
-                    position=info['element_type'][i]
+                    position=info['element_type'][i],
+                    xP=0
                 )
                 row.save()

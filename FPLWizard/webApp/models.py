@@ -51,6 +51,7 @@ class UnderstatAPIStatsGameweek(models.Model):
 class Team(models.Model):
     teamID = models.IntegerField(primary_key=True)
     teamName = models.CharField(max_length=100)
+    teamStrength = models.FloatField(verbose_name="Team Strength")
 
     def __str__(self):
         return self.teamName
@@ -82,6 +83,7 @@ class PlayerTeamAndPosition(models.Model):
     teamID = models.IntegerField(verbose_name='Team ID')
     # position 1=GK, 2=DEF, 3=MID, 4=ATT
     position = models.IntegerField(verbose_name="Position")
+    xP = models.FloatField(verbose_name="Expected Points")
 
     def __str__(self):
         return self.playerID + " - " + self.teamID
