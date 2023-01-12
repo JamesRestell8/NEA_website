@@ -2,13 +2,59 @@ import requests
 import time
 from requests import ConnectionError
 import pandas as pd
+import math
 
 from .models import Team
+from .models import Fixture
 
 
 class TeamUpdater():
     def __init__(self):
         pass
+    
+    # return the probability that a team beats their opponent based on their elos
+    # implementation of mainstream elo algorithm found in online games (chess etc.)
+    def getProbability(self, ratingTeam, ratingOpposition):
+        return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingTeam - ratingOpposition) / 400))
+    
+    def calculateElos(self) -> list:
+        # Elo constant
+        K = 40
+        # set all teams elo to 1000 at the start of the season
+        elos = [1000 for i in range(20)]
+        # get all of the fixtures that have been played
+        fixturesPlayed = Fixture.objects.exclude(homeTeamGoals=-1)
+        # sort them by gameweek, with gameweek 1 first
+        fixturesPlayed = fixturesPlayed.order_by('gameweekNumber')
+        # for every fixture played, update the elo of both teams involved
+        for i in range(len(fixturesPlayed)):
+            # Get the IDs of the teams involved (also the index of the elo array)
+            homeTeam = fixturesPlayed[i].homeTeamID
+            awayTeam = fixturesPlayed[i].awayTeamID
+            
+            # get the amount of goals each team scored in the game
+            homeScore = fixturesPlayed[i].homeTeamGoals
+            awayScore = fixturesPlayed[i].awayTeamGoals
+
+            # work out the probability of each team winning the game based on their elos
+            homeProb = self.getProbability(elos[homeTeam - 1], elos[awayTeam - 1])
+            awayProb = self.getProbability(elos[awayTeam - 1], elos[homeTeam - 1])
+
+            # work out the actual result of the match (1 = win, 0.5 = draw, 0 = loss)
+            if homeScore > awayScore:
+                homeActual = 1
+                awayActual = 0
+            elif homeScore < awayScore:
+                homeActual = 0
+                awayActual = 1
+            else:
+                homeActual = 0.5
+                awayActual = 0.5
+            
+            # adjust the elos of both teams based on the result and their initial elos
+            elos[homeTeam - 1] = elos[homeTeam - 1] + K * (homeActual - homeProb)
+            elos[awayTeam - 1] = elos[awayTeam - 1] + K * (awayActual - awayProb)
+        return elos
 
     def populateDatabase(self):
         url = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -45,3 +91,9 @@ class TeamUpdater():
                     teamStrength=0
                     )
                 row.save()
+        elos = self.calculateElos()
+        
+        for index, elo in enumerate(elos):
+            team = Team.objects.get(teamID=index+1)
+            team.teamStrength = elo
+            team.save()
