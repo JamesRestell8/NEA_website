@@ -4,19 +4,25 @@ import requests
 
 from .models import PlayerTeamAndPosition
 from .models import FPLAPIStatsGameweek
+from .models import Fixture
 
 
 class PlayerGeneralInfoUpdater():
     def __init__(self) -> None:
         pass
     
-    def updatexP(self, fplID: int):
+    def updateForm(self, fplID: int) -> float:
         try:
             playerGameweeks = FPLAPIStatsGameweek.objects.filter(fpl_id=fplID)
-            mostRecentGameweeks = playerGameweeks.order_by('-fpl_gameweekNumber')[0].fpl_gameweekNumber
+            mostRecentGameweeks = playerGameweeks.order_by('-fpl_gameweekNumber')
             scores = []
-            for i in range(5):
-                scores.append(FPLAPIStatsGameweek.objects.get(fpl_id=fplID, fpl_gameweekNumber=(mostRecentGameweeks - i)).fpl_total_points)
+            count = 0
+            while len(scores) != 5:
+                if Fixture.objects.get(fixtureID=mostRecentGameweeks[0].fpl_fixtureID).homeTeamGoals == -1:
+                    count += 1
+                else:
+                    scores.append(mostRecentGameweeks[count].fpl_total_points)
+                    count += 1
             toReturn = self.averageList(scores)
         except IndexError:
             toReturn = 0
@@ -68,10 +74,12 @@ class PlayerGeneralInfoUpdater():
                     playerID=info['id'][i],
                     teamID=info['team'][i],
                     position=info['element_type'][i],
+                    form=0,
                     xP=0
                 )
+                row.save()
                 existing = PlayerTeamAndPosition.objects.get(playerID=info['id'][i])
             
-            existing.xP = self.updatexP(existing.playerID)
+            existing.form = self.updateForm(existing.playerID)
             existing.save()
 

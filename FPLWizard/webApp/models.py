@@ -79,6 +79,7 @@ class PlayerTeamAndPosition(models.Model):
     teamID = models.IntegerField(verbose_name='Team ID')
     # position 1=GK, 2=DEF, 3=MID, 4=ATT
     position = models.IntegerField(verbose_name="Position")
+    form = models.FloatField(verbose_name="Form")
     xP = models.FloatField(verbose_name="Expected Points")
 
     def __str__(self):
