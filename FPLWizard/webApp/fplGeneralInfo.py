@@ -3,11 +3,32 @@ import time
 import requests
 
 from .models import PlayerTeamAndPosition
+from .models import FPLAPIStatsGameweek
 
 
 class PlayerGeneralInfoUpdater():
     def __init__(self) -> None:
         pass
+    
+    def updatexP(self, fplID: int):
+        try:
+            playerGameweeks = FPLAPIStatsGameweek.objects.filter(fpl_id=fplID)
+            mostRecentGameweeks = playerGameweeks.order_by('-fpl_gameweekNumber')[0].fpl_gameweekNumber
+            scores = []
+            for i in range(5):
+                scores.append(FPLAPIStatsGameweek.objects.get(fpl_id=fplID, fpl_gameweekNumber=(mostRecentGameweeks - i)).fpl_total_points)
+            toReturn = self.averageList(scores)
+        except IndexError:
+            toReturn = 0
+        return float(toReturn)
+
+    def averageList(self, array: list) -> float:
+        total = 0
+        count = 0
+        for item in array:
+            count += 1
+            total += item
+        return total / count
 
     def populateDatabase(self):
         url = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -49,4 +70,8 @@ class PlayerGeneralInfoUpdater():
                     position=info['element_type'][i],
                     xP=0
                 )
-                row.save()
+                existing = PlayerTeamAndPosition.objects.get(playerID=info['id'][i])
+            
+            existing.xP = self.updatexP(existing.playerID)
+            existing.save()
+

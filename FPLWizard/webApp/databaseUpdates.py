@@ -96,10 +96,10 @@ class DatabaseUpdater():
         self.updateGeneralInfo()
         print("General info updated", end='\n')
         # ~ 5 mins
-        #start = time.time()
-        #self.populateAllFPLPlayerStatsByGameweek()
-        #end = time.time()
-        #print(f"FPL database done in {end - start} seconds")
+        start = time.time()
+        # self.populateAllFPLPlayerStatsByGameweek()
+        end = time.time()
+        print(f"FPL database done in {end - start} seconds")
         # ~10 mins
         #start = time.time()
         #self.populateAllUnderstatPlayerStatsByGameweek()

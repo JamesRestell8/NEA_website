@@ -17,10 +17,6 @@ class FPLAPIStatsGameweek(models.Model):
     fpl_clean_sheets = models.IntegerField(default=0, verbose_name='Clean Sheets')
     fpl_goals_conceded = models.IntegerField(default=0, verbose_name='Goals Conceded')
     fpl_total_points = models.IntegerField(default=0, verbose_name='Total Points')
-    # should be a number 1-20
-    fpl_team = models.IntegerField(verbose_name='Team', validators=[MinValueValidator(0), MaxValueValidator(21)]) 
-    # should be a number 1-4
-    fpl_position = models.IntegerField(verbose_name='Position', validators=[MinValueValidator(0), MaxValueValidator(5)]) 
     fpl_yellow_cards = models.IntegerField(verbose_name="Yellow Cards", default=0)
     fpl_cost = models.FloatField(verbose_name='Cost')
     fpl_threat = models.FloatField(verbose_name='Threat')

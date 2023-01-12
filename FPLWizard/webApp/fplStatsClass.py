@@ -110,8 +110,6 @@ class FPLStats():
                             fpl_clean_sheets = stats['clean_sheets'][i],
                             fpl_goals_conceded = stats['goals_conceded'][i],
                             fpl_total_points = stats['total_points'][i],
-                            fpl_team = 0,
-                            fpl_position = 0,
                             fpl_yellow_cards = stats['yellow_cards'][i],
                             fpl_cost = stats['value'][i],
                             fpl_threat = stats['threat'][i],
