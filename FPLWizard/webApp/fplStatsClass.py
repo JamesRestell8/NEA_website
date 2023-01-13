@@ -4,10 +4,10 @@ from requests import ConnectionError
 import pandas as pd
 
 from .models import FPLAPIStatsGameweek, APIIDDictionary
-
+from .databaseManager import databaseManager
 
 # A class that can access a player's stats by gameweek, as well as containing methods to update the FPLAPI database table
-class FPLStats():
+class FPLStats(databaseManager):
     def __init__(self, fplID: int):
         self.fplID = fplID
         
@@ -51,7 +51,7 @@ class FPLStats():
     def getPlayerCreativity(self, gameweek: int):
         return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_creativity
 
-    def populateAllGameweeks(self):
+    def populateDatabase(self):
         url = f"https://fantasy.premierleague.com/api/element-summary/{self.fplID}/"
 
         # code to request API over 15 second period in case of connection delays

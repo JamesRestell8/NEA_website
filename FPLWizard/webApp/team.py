@@ -6,12 +6,9 @@ import math
 
 from .models import Team
 from .models import Fixture
+from .databaseManager import databaseManager
 
-
-class TeamUpdater():
-    def __init__(self):
-        pass
-    
+class TeamUpdater(databaseManager):
     # return the probability that a team beats their opponent based on their elos
     # implementation of mainstream elo algorithm found in online games (chess etc.)
     def getProbability(self, ratingTeam, ratingOpposition):

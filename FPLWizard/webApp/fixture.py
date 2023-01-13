@@ -4,12 +4,9 @@ from requests import ConnectionError
 import pandas as pd
 
 from .models import Fixture
+from .databaseManager import databaseManager
 
-
-class FixtureUpdater():
-    def __init__(self):
-        pass
-
+class FixtureUpdater(databaseManager):
     def populateDatabase(self):
         url = "https://fantasy.premierleague.com/api/fixtures"
 

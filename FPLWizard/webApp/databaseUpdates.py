@@ -44,7 +44,7 @@ class DatabaseUpdater():
 
     def getFPLPlayerStatsByGameweek(self, FPLplayerID: int):
         x = FPLStats(FPLplayerID)
-        x.populateAllGameweeks()
+        x.populateDatabase()
     
     # NOTE: the FPL API will return all player gameweeks, even if they didn't feature. Understat only keeps records of player gameweeks where the player featured.
     def populateAllFPLPlayerStatsByGameweek(self):

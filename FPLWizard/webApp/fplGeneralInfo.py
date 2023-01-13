@@ -5,12 +5,9 @@ import requests
 from .models import PlayerTeamAndPosition
 from .models import FPLAPIStatsGameweek
 from .models import Fixture
+from .databaseManager import databaseManager
 
-
-class PlayerGeneralInfoUpdater():
-    def __init__(self) -> None:
-        pass
-    
+class PlayerGeneralInfoUpdater(databaseManager):
     def updateForm(self, fplID: int) -> float:
         try:
             playerGameweeks = FPLAPIStatsGameweek.objects.filter(fpl_id=fplID)
