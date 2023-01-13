@@ -4,6 +4,8 @@ import requests
 
 from .models import PlayerTeamAndPosition
 from .models import FPLAPIStatsGameweek
+from .models import APIIDDictionary
+from .models import UnderstatAPIStatsGameweek
 from .models import Fixture
 from .databaseManager import databaseManager
 
@@ -20,6 +22,26 @@ class PlayerGeneralInfoUpdater(databaseManager):
                 else:
                     scores.append(mostRecentGameweeks[count].fpl_total_points)
                     count += 1
+            toReturn = self.averageList(scores)
+        except IndexError:
+            toReturn = 0
+        toReturn += self.getUnderlyings(fplID)
+        return float(toReturn)
+
+    def getUnderlyings(self, fplID: int):
+        try:
+            understatID = APIIDDictionary.objects.get(fplID=fplID).understatID
+        except APIIDDictionary.DoesNotExist:
+            return 0
+        
+        try:
+            playerGameweeks = UnderstatAPIStatsGameweek.objects.filter(understat_id=understatID)
+            mostRecentGameweeks = playerGameweeks.order_by('-understat_fixtureID')
+            scores = []
+            count = 0
+            while len(scores) != 5:
+                scores.append(mostRecentGameweeks[count].understat_xG_chain * 3)
+                count += 1
             toReturn = self.averageList(scores)
         except IndexError:
             toReturn = 0
