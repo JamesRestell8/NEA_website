@@ -15,11 +15,11 @@ class TeamUpdater():
     # return the probability that a team beats their opponent based on their elos
     # implementation of mainstream elo algorithm found in online games (chess etc.)
     def getProbability(self, ratingTeam, ratingOpposition):
-        return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingTeam - ratingOpposition) / 400))
+        return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingOpposition - ratingTeam) / 400))
     
     def calculateElos(self) -> list:
         # Elo constant
-        K = 40
+        K = 100
         # set all teams elo to 1000 at the start of the season
         elos = [1000 for i in range(20)]
         # get all of the fixtures that have been played
