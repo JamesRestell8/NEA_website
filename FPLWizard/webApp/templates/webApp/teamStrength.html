@@ -1,0 +1,21 @@
+{% extends 'webApp/base.html' %}
+{% load static %}
+
+{% block title %} Team Rankings {% endblock %}
+
+{% block content %}
+<table>
+    <tr>
+        <th style="width:20%">Rank</th>
+        <th style="width:40%">Team</th>
+        <th style="width:40%">Elo</th>
+    </tr>
+    {% for team, elo in teams %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ team }}</td>
+        <td>{{ elo }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

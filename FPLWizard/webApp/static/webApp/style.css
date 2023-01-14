@@ -161,3 +161,20 @@ input[type=submit]:hover {
     color: white;
     cursor: pointer;
 }
+
+tr:hover {
+    background-color: #d4f1ff;
+}
+
+table {
+    width: 100%;
+    font-size: larger;
+}
+
+th {
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}

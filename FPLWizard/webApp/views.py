@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from .databaseUpdates import DatabaseUpdater
 from .user import User
-from .models import APIIDDictionary, FPLAPIStatsGameweek, UnderstatAPIStatsGameweek
+from .models import APIIDDictionary, FPLAPIStatsGameweek, UnderstatAPIStatsGameweek, Team
 import pandas as pd
 from .forms import userTeamEntry
 from FPLWizard.settings import MEDIA_ROOT
@@ -98,4 +98,15 @@ def attackers(request):
 def fplIDHelp(request):
     template = loader.get_template("webApp/fplIDHelp.html")
     context = {}
+    return HttpResponse(template.render(context, request))
+
+def teamStrength(request):
+    template = loader.get_template("webApp/teamStrength.html")
+    teams = Team.objects.all().order_by('-teamStrength')
+    info = []
+    for team in teams:
+        info.append((team.teamName, int(team.teamStrength)))
+    context = {
+        "teams": info,
+    }
     return HttpResponse(template.render(context, request))

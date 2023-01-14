@@ -10,4 +10,5 @@ urlpatterns = [
     path('Midfielders/', views.midfielders, name='midfielders'),
     path('Attackers/', views.attackers, name='attackers'),
     path('MyFPL/fplIDHelp/', views.fplIDHelp, name='fplIDHelp'),
+    path('TeamRankings/', views.teamStrength, name="teamStrength")
 ]

@@ -17,5 +17,5 @@ class WebappConfig(AppConfig):
         db = DatabaseUpdater()
 
         # DatabaseUpdater function that runs all the required functions in order
-        scheduler.add_job(db.tasksInOrder, 'interval', minutes=30, next_run_time=datetime.now())
-        scheduler.start()
+        #scheduler.add_job(db.tasksInOrder, 'interval', minutes=30, next_run_time=datetime.now())
+        #scheduler.start()
