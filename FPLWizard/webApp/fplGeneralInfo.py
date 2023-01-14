@@ -40,7 +40,13 @@ class PlayerGeneralInfoUpdater(databaseManager):
             scores = []
             count = 0
             while len(scores) != 5:
-                scores.append(mostRecentGameweeks[count].understat_xG_chain * 3)
+                chain = mostRecentGameweeks[count].understat_xG_chain
+                buildup = mostRecentGameweeks[count].understat_xG_buildup
+                if chain >= buildup:
+                    toUse = chain
+                else:
+                    toUse = buildup
+                scores.append(toUse * 2)
                 count += 1
             toReturn = self.averageList(scores)
         except IndexError:
