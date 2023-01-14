@@ -1,13 +1,16 @@
 import pandas as pd
 import time
 import requests
+from django.db.models import Q
 
 from .models import PlayerTeamAndPosition
 from .models import FPLAPIStatsGameweek
 from .models import APIIDDictionary
 from .models import UnderstatAPIStatsGameweek
 from .models import Fixture
+from .models import Team
 from .databaseManager import databaseManager
+from .team import TeamUpdater
 
 class PlayerGeneralInfoUpdater(databaseManager):
     def updateForm(self, fplID: int) -> float:
@@ -81,7 +84,7 @@ class PlayerGeneralInfoUpdater(databaseManager):
         
         info = pd.DataFrame(r['elements'])
         info = info[['id', 'team', 'element_type']]
-
+        print(len(info['id']))
         for i in range(len(info['id'])):
             try:
                 existing = PlayerTeamAndPosition.objects.get(playerID=info['id'][i])
@@ -92,7 +95,6 @@ class PlayerGeneralInfoUpdater(databaseManager):
                     existing.teamID = currentTeam
                 if existing.position != currentPos:
                     existing.position = currentPos
-                existing.save()
             # add the player if the player does not exist
             except PlayerTeamAndPosition.DoesNotExist:
                 row = PlayerTeamAndPosition(
@@ -106,5 +108,25 @@ class PlayerGeneralInfoUpdater(databaseManager):
                 existing = PlayerTeamAndPosition.objects.get(playerID=info['id'][i])
             
             existing.form = self.updateForm(existing.playerID)
+
+            playerTeam = Team.objects.get(teamID=existing.teamID)
+            playerTeamStrength = playerTeam.teamStrength
+
+            # get all unplayed matches
+            # exclude fixtures that are to be rescheduled
+            unplayed = Fixture.objects.filter(homeTeamGoals=-1).exclude(gameweekNumber=-1)
+            # get only the games that the players team is involved in
+            unplayed = unplayed.filter(Q(homeTeamID = existing.teamID) | Q(awayTeamID = existing.teamID))
+
+            unplayed = unplayed.order_by('gameweekNumber')
+            nextMatch = unplayed[0]
+            if nextMatch.homeTeamID == existing.teamID:
+                isHome = True
+                oppositionStrength = Team.objects.get(teamID=nextMatch.awayTeamID).teamStrength
+            else:
+                isHome = False
+                oppositionStrength = Team.objects.get(teamID=nextMatch.homeTeamID).teamStrength
+            # scale a players xP based on their win probability
+            existing.xP = existing.form * ((TeamUpdater.getProbability(playerTeamStrength, oppositionStrength, isHome) / 2) + 0.5)
             existing.save()
 

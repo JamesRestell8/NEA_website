@@ -11,9 +11,14 @@ from .databaseManager import databaseManager
 class TeamUpdater(databaseManager):
     # return the probability that a team beats their opponent based on their elos
     # implementation of mainstream elo algorithm found in online games (chess etc.)
-    def getProbability(self, ratingTeam, ratingOpposition):
-        return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingOpposition - ratingTeam) / 400))
-    
+    # adjusted to favour the home team slightly (probabilities still add to 1)
+    @staticmethod
+    def getProbability(ratingTeam: float, ratingOpposition: float, isHome: bool) -> float:
+        if isHome:
+            return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingOpposition - ratingTeam) / 400)) * 1.1
+        else:
+            return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingOpposition - ratingTeam) / 400)) * 0.9
+
     def calculateElos(self) -> list:
         # Elo constant
         K = 100
@@ -34,8 +39,8 @@ class TeamUpdater(databaseManager):
             awayScore = fixturesPlayed[i].awayTeamGoals
 
             # work out the probability of each team winning the game based on their elos
-            homeProb = self.getProbability(elos[homeTeam - 1], elos[awayTeam - 1])
-            awayProb = self.getProbability(elos[awayTeam - 1], elos[homeTeam - 1])
+            homeProb = self.getProbability(elos[homeTeam - 1], elos[awayTeam - 1], True)
+            awayProb = self.getProbability(elos[awayTeam - 1], elos[homeTeam - 1], False)
 
             # work out the actual result of the match (1 = win, 0.5 = draw, 0 = loss)
             if homeScore > awayScore:
