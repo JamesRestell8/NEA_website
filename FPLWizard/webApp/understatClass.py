@@ -75,7 +75,7 @@ class UnderstatStats():
 
         try:
             latestRound = UnderstatAPIStatsGameweek.objects.filter(understat_id=self.understatID).order_by('-understat_fixtureID').first()
-            latestRound = latestRound.id
+            latestRound = latestRound.understat_fixtureID
         except (UnderstatAPIStatsGameweek.DoesNotExist, AttributeError):
             latestRound = 0
         
@@ -90,7 +90,6 @@ class UnderstatStats():
                 else:
                     needsUpdate = True
                 if needsUpdate:
-                    print("adding row...")
                     row = UnderstatAPIStatsGameweek(
                         understat_id = self.understatID,
                         understat_playerName = APIIDDictionary.objects.get(understatID=self.understatID).understatName,

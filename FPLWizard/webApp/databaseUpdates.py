@@ -87,22 +87,22 @@ class DatabaseUpdater():
         # time delay to allow time to perform admin tasks in the terminal before print statements
         time.sleep(5)
         # executes in less than 20 seconds
-        #self.setApiIdDictionary()
-        #print("ID dictionary done", end='\n')
-        #self.updateTeamTable()
-        #print("teams updated", end="\n")
-        #self.updateFixtureTable()
-        #print("Fixtures done", end='\n')
-        ## # ~ 5 mins
-        #start = time.time()
-        #self.populateAllFPLPlayerStatsByGameweek()
-        #end = time.time()
-        #print(f"FPL database done in {end - start} seconds")
-        ## ~10 mins
-        #start = time.time()
-        #self.populateAllUnderstatPlayerStatsByGameweek()
-        #end = time.time()
-        #print(f"Understat database done in {end - start} seconds")
+        self.setApiIdDictionary()
+        print("ID dictionary done", end='\n')
+        self.updateFixtureTable()
+        print("Fixtures done", end='\n')
+        self.updateTeamTable()
+        print("teams updated", end="\n")
+        # # ~ 5 mins
+        start = time.time()
+        self.populateAllFPLPlayerStatsByGameweek()
+        end = time.time()
+        print(f"FPL database done in {end - start} seconds")
+        # ~10 mins
+        start = time.time()
+        self.populateAllUnderstatPlayerStatsByGameweek()
+        end = time.time()
+        print(f"Understat database done in {end - start} seconds")
         start = time.time()
         self.updateGeneralInfo()
         end = time.time()
