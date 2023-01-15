@@ -19,6 +19,17 @@ def index(request):
     template = loader.get_template("webApp/index.html")
     # TODO: need to convert data from PlayerTeamAndPosition into a table that knapsackSolver understands
     playerTable = []
+    players = PlayerTeamAndPosition.objects.all()
+    for player in players:
+        try:
+            cost = FPLAPIStatsGameweek.objects.filter(fpl_id=player.playerID).order_by('-fpl_gameweekNumber').first().fpl_cost
+            name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
+            playerTable.append([player.position, player.teamID, cost, player.xP, name])
+        except AttributeError:
+            pass
+        except APIIDDictionary.DoesNotExist:
+            pass
+
     knapsack = knapsackSolver(playerTable, 1000, 15, [])
     knapsack.solveKnapsack()
 

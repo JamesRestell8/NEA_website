@@ -9,8 +9,10 @@ class knapsackSolver():
         self.budget = budget
         self.squadSize = squadSize
         self.answer = answer
+        self.positionsDone = []
+        self.teamsDone = []
     
-    def checkTeams(self, items: list, limit: int) -> int:
+    def checkTeams(self, items: list, limit: int, toExclude: list) -> int:
         unique = []
         for item in items:
             if item not in unique:
@@ -23,11 +25,12 @@ class knapsackSolver():
 
         for num in count:
             if num >= limit:
-                return unique[count.index(num)]
+                if unique[count.index(num)] not in toExclude:
+                    return unique[count.index(num)]
         return 0
 
 
-    def checkPositions(self, items) -> int:
+    def checkPositions(self, items: list, toExclude: list) -> int:
         unique = [1, 2, 3, 4]
 
         count = [0 for i in range(len(unique))]
@@ -37,7 +40,7 @@ class knapsackSolver():
         limits = [2, 5, 5, 3]
         answer = 0
         for i in range(len(count)):
-            if count[i] == limits[i]:
+            if count[i] == limits[i] and (i + 1) not in toExclude:
                 answer = i + 1
         return answer
 
@@ -57,7 +60,7 @@ class knapsackSolver():
     def removePosition(self, table: list, position: int) -> list:
         answer = []
         for row in table:
-            if row[2] != position:
+            if row[0] != position:
                 answer.append(row)
         return answer
 
@@ -101,18 +104,17 @@ class knapsackSolver():
                 k += 1
         return table
 
-    def homemadeKnapsackWithNames(self, budget: int, maxPlayers: int, table: list, answer: list):
-        if len(answer) == 15:
-            total = 0
-            totalCost = 0
-            for i in range(len(answer)):
-                print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]})")
-                total += answer[i][3]
-                totalCost += answer[i][2]
-            print(f"Max Points: {total}")
-            print(f"Players used: {len(answer)}")
-            print(f"Budget used: {totalCost}")
-            return answer
+    def homemadeKnapsackWithNames(self, budget: int, maxPlayers: int, table: list, answer: list, positionsDone: list, teamsDone: list):
+        print(len(answer))
+        total = 0
+        totalCost = 0
+        for i in range(len(answer)):
+            print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
+            total += answer[i][3]
+            totalCost += answer[i][2]
+        print(f"Max Points: {total}")
+        print(f"Players used: {len(answer)}")
+        print(f"Budget used: {totalCost}")
 
         if len(answer) > 1:
             positions = []
@@ -121,35 +123,49 @@ class knapsackSolver():
                 positions.append(entry[0])
                 teams.append(entry[1])
             # remove players who play in a position that is already full
-            table = self.removePosition(table, self.checkPositions(positions))
-
+            positionToRemove = self.checkPositions(positions, positionsDone) 
+            table = self.removePosition(table, positionToRemove)
+            positionsDone.append(positionToRemove)
             # remove players who play for a team who already have 3 players in the team
-            table = self.removeTeam(table, self.checkTeams(teams, 3))
+            teamToRemove = self.checkTeams(teams, 3, teamsDone)
+            table = self.removeTeam(table, teamToRemove)
+            teamsDone.append(teamToRemove)
 
         # only populate the density values the first time the function is called
         if len(answer) == 0:
             for i in range(len(table)):
-                table[i].append(int(table[i][5]) / int(table[i][3]))
+                table[i].append(int(table[i][3]) / int(table[i][2]))
 
         # sort by descending density values
-        table = self.mergeSort2DBy(table, 6)
+        table = self.mergeSort2DBy(table, 5)
         # ensures that the algorithm never buys a player that is so expensive that it can't fill in the rest of the squad
-        minBudget = 45 * (maxPlayers - 1) 
+        minBudget = 45 * (maxPlayers - 1)
+        print(f"minBudget: {minBudget}")
+        print(f"Max Players: {maxPlayers}")
+        print(len(table))
         if maxPlayers != 0:
             # makes sure that the algo makes the most of its budget near the end of squad selection
             minNextPlayerPrice = (budget / maxPlayers) - 20
+            costs = []
+            for entry in table:
+                costs.append(entry[2])
+            maxPriceRemaining = max(costs)
 
             # ensures that the min price never crashes the algorithm by being more than the most expensive player
-            if minNextPlayerPrice > 95:
-                minNextPlayerPrice = 95
+            if minNextPlayerPrice > maxPriceRemaining:
+                minNextPlayerPrice = maxPriceRemaining - 10
 
+            print(f"Min Next Player Price: {minNextPlayerPrice}")
             # add the first player that is affordable, and above the minimum price value
             for i in range(len(table)):
-                if (budget - table[i][3] >= minBudget) and table[i][3] >= minNextPlayerPrice:
-                    answer.append((table[i][2], table[i][1], table[i][3], table[i][5], table[i][0]))
-                    cost = table[i][3]
+                print(table[i][4])
+                if (budget - table[i][2] >= minBudget) and table[i][2] >= minNextPlayerPrice:
+                    answer.append((table[i][0], table[i][1], table[i][2], table[i][3], table[i][4]))
+                    cost = table[i][2]
                     table.pop(i)
                     # call the function again, with updated parameters
-                    return self.homemadeKnapsackWithNames(budget - cost, maxPlayers - 1, table, answer)
+                    return self.homemadeKnapsackWithNames(budget - cost, maxPlayers - 1, table, answer, positionsDone, teamsDone)
+    
     def solveKnapsack(self):
-        return self.homemadeKnapsackWithNames(self.budget, self.squadSize, self.playerTable, self.answer)
+        self.homemadeKnapsackWithNames(self.budget, self.squadSize, self.playerTable, self.answer, self.positionsDone, self.teamsDone)
+        print(len(self.playerTable))
