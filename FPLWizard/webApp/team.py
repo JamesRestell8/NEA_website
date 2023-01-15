@@ -13,11 +13,11 @@ class TeamUpdater(databaseManager):
     # implementation of mainstream elo algorithm found in online games (chess etc.)
     # adjusted to favour the home team slightly (probabilities still add to 1)
     @staticmethod
-    def getProbability(ratingTeam: float, ratingOpposition: float, isHome: bool) -> float:
+    def getProbability(ratingTeam, ratingOpposition, isHome):
         if isHome:
-            return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingOpposition - ratingTeam) / 400)) * 1.1
+            return (1.0 / (1 + math.pow(10, (ratingOpposition - ratingTeam) / 400))) * 1.1
         else:
-            return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (ratingOpposition - ratingTeam) / 400)) * 0.9
+            return 1 - TeamUpdater.getProbability(ratingOpposition, ratingTeam, True)
 
     def calculateElos(self) -> list:
         # Elo constant

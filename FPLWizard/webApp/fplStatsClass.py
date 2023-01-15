@@ -95,6 +95,9 @@ class FPLStats(databaseManager):
                             needsUpdate = False
                         except FPLAPIStatsGameweek.DoesNotExist:
                             needsUpdate = True
+                        # if the team had a double gameweek this error would be thrown
+                        except FPLAPIStatsGameweek.MultipleObjectsReturned:
+                            needsUpdate = False
                     else:
                         needsUpdate = True
 

@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from .databaseUpdates import DatabaseUpdater
 from .user import User
-from .models import APIIDDictionary, FPLAPIStatsGameweek, UnderstatAPIStatsGameweek, Team
+from .models import APIIDDictionary, FPLAPIStatsGameweek, PlayerTeamAndPosition, UnderstatAPIStatsGameweek, Team
 import pandas as pd
 from .forms import userTeamEntry
 from FPLWizard.settings import MEDIA_ROOT
@@ -18,15 +18,6 @@ def index(request):
     template = loader.get_template("webApp/index.html")
     context = {}
     return HttpResponse(template.render(context, request))
-
-
-def positions(request):
-    template = loader.get_template("webApp/positions.html")
-    context = {
-        'pageName': 'Positions'
-    }
-    return HttpResponse(template.render(context, request))
-
 
 def csvTeamToPandas(file):
     pass
@@ -65,32 +56,73 @@ def myFPL(request):
 
 def goalkeepers(request):
     template = loader.get_template("webApp/positions.html")
+    players = PlayerTeamAndPosition.objects.filter(position=1).order_by('-xP')
+    info = []
+    for player in players:
+        xP = player.xP
+        try:
+            name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
+            info.append((name, xP))
+        except APIIDDictionary.DoesNotExist:
+            pass
     context = {
-        'pageName': 'goalkeepers'
+        'position': 'Goalkeeper',
+        'players': info,
     }
     return HttpResponse(template.render(context, request))
 
 
 def defenders(request):
     template = loader.get_template("webApp/positions.html")
+    players = PlayerTeamAndPosition.objects.filter(position=2).order_by('-xP')
+    info = []
+    for player in players:
+        xP = player.xP
+        try:
+            name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
+            info.append((name, xP))
+        except APIIDDictionary.DoesNotExist:
+            pass
     context = {
-        'pageName': 'defenders'
+        'position': 'Defender',
+        'players': info,
     }
     return HttpResponse(template.render(context, request))
 
 
 def midfielders(request):
     template = loader.get_template("webApp/positions.html")
+    players = PlayerTeamAndPosition.objects.filter(position=3).order_by('-xP')
+    info = []
+    for player in players:
+        xP = player.xP
+        try:
+            name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
+            info.append((name, xP))
+        except APIIDDictionary.DoesNotExist:
+            pass
     context = {
-        'pageName': 'midfielders'
+        'position': 'Midfielder',
+        'players': info,
     }
     return HttpResponse(template.render(context, request))
 
 
 def attackers(request):
     template = loader.get_template("webApp/positions.html")
+    players = PlayerTeamAndPosition.objects.filter(position=4).order_by('-xP')
+    info = []
+    for player in players:
+        xP = player.xP
+        try:
+            name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
+            info.append((name, xP))
+        except APIIDDictionary.DoesNotExist:
+            pass
+
     context = {
-        'pageName': 'attackers'
+        'position': 'Attacker',
+        'players': info,
     }
     return HttpResponse(template.render(context, request))
 
