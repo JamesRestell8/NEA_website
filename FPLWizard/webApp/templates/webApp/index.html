@@ -25,6 +25,22 @@
 <body>
     <h1 id='title'>FPL Wizard Home</h1>
 </body>
-{% for name, team, position, xP in dreamTeam%}
+<h2>Team of the Week</h2>
+<table>
+    <tr>
+        <th>Player Name</th>
+        <th>Team</th>
+        <th>Position</th>
+        <th>Expected Points</th>
+    </tr>
+    {% for name, team, position, xP in dreamTeam %}
+    <tr>
+        <td>{{ name }}</td>
+        <td>{{ team }}</td>
+        <td>{{ position }}</td>
+        <td>{{ xP }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
-{% endfor %}
+<h2>Total Expected Points: {{total}}</h2>

@@ -2,6 +2,7 @@ import pandas as pd
 import time
 import numpy
 
+from .models import Team
 
 class knapsackSolver():
     def __init__(self, playerTable: list, budget: int, squadSize: int, answer: list):
@@ -106,15 +107,30 @@ class knapsackSolver():
 
     def homemadeKnapsackWithNames(self, budget: int, maxPlayers: int, table: list, answer: list, positionsDone: list, teamsDone: list):
         print(len(answer))
-        total = 0
-        totalCost = 0
-        for i in range(len(answer)):
-            print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
-            total += answer[i][3]
-            totalCost += answer[i][2]
-        print(f"Max Points: {total}")
-        print(f"Players used: {len(answer)}")
-        print(f"Budget used: {totalCost}")
+        if len(answer) == 15:
+            total = 0
+            totalCost = 0
+            temp = []
+            for i in range(len(answer)):
+                print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
+                total += answer[i][3]
+                totalCost += answer[i][2]
+                temp.append((answer[i][4], answer[i][1], answer[i][0], answer[i][3]))
+            
+            temp = self.mergeSort2DBy(temp, 2)
+            positions = {
+                1: "GK",
+                2: "DEF",
+                3: "MID",
+                4: "ATT",
+            }
+            toReturn = []
+            for entry in temp:
+                toReturn.append((entry[0], Team.objects.get(teamID=entry[1]).teamName, positions.get(entry[2]), entry[3]))
+            print(f"Max Points: {total}")
+            print(f"Players used: {len(answer)}")
+            print(f"Budget used: {totalCost}")
+            return (toReturn, total)
 
         if len(answer) > 1:
             positions = []
@@ -140,8 +156,6 @@ class knapsackSolver():
         table = self.mergeSort2DBy(table, 5)
         # ensures that the algorithm never buys a player that is so expensive that it can't fill in the rest of the squad
         minBudget = 45 * (maxPlayers - 1)
-        print(f"minBudget: {minBudget}")
-        print(f"Max Players: {maxPlayers}")
         print(len(table))
         if maxPlayers != 0:
             # makes sure that the algo makes the most of its budget near the end of squad selection
@@ -154,8 +168,6 @@ class knapsackSolver():
             # ensures that the min price never crashes the algorithm by being more than the most expensive player
             if minNextPlayerPrice > maxPriceRemaining:
                 minNextPlayerPrice = maxPriceRemaining - 10
-
-            print(f"Min Next Player Price: {minNextPlayerPrice}")
             # add the first player that is affordable, and above the minimum price value
             for i in range(len(table)):
                 print(table[i][4])
@@ -167,5 +179,4 @@ class knapsackSolver():
                     return self.homemadeKnapsackWithNames(budget - cost, maxPlayers - 1, table, answer, positionsDone, teamsDone)
     
     def solveKnapsack(self):
-        self.homemadeKnapsackWithNames(self.budget, self.squadSize, self.playerTable, self.answer, self.positionsDone, self.teamsDone)
-        print(len(self.playerTable))
+        return self.homemadeKnapsackWithNames(self.budget, self.squadSize, self.playerTable, self.answer, self.positionsDone, self.teamsDone)

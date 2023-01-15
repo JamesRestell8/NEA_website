@@ -31,9 +31,12 @@ def index(request):
             pass
 
     knapsack = knapsackSolver(playerTable, 1000, 15, [])
-    knapsack.solveKnapsack()
+    dreamTeam = knapsack.solveKnapsack()
 
-    context = {}
+    context = {
+        'dreamTeam': dreamTeam[0],
+        'total': dreamTeam[1],
+    }
     return HttpResponse(template.render(context, request))
 
 def myFPL(request):
