@@ -23,13 +23,11 @@ class PlayerGeneralInfoUpdater(databaseManager):
                 if Fixture.objects.get(fixtureID=mostRecentGameweeks[count].fpl_fixtureID).homeTeamGoals == -1:
                     count += 1
                 else:
-                    print("added something...")
                     scores.append(mostRecentGameweeks[count].fpl_total_points)
                     count += 1
             toReturn = self.averageList(scores)
         except IndexError:
             toReturn = 0
-        print("getting underlyings...")
         toReturn += self.getUnderlyings(fplID)
         return float(toReturn)
 
@@ -87,9 +85,7 @@ class PlayerGeneralInfoUpdater(databaseManager):
         info = pd.DataFrame(r['elements'])
         info = info[['id', 'team', 'element_type']]
         for i in range(len(info['id'])):
-            print("in loop...")
             try:
-                print(info['id'][i])
                 existing = PlayerTeamAndPosition.objects.get(playerID=info['id'][i])
                 # update the player if their information has changed
                 currentTeam = info['team'][i]
@@ -112,21 +108,17 @@ class PlayerGeneralInfoUpdater(databaseManager):
                 row.save()
                 existing = PlayerTeamAndPosition.objects.get(playerID=info['id'][i])
             
-            print("Updating form...")
             existing.form = self.updateForm(existing.playerID)
 
-            print("getting team...")
             playerTeam = Team.objects.get(teamID=existing.teamID)
             playerTeamStrength = playerTeam.teamStrength
 
-            print("getting fixtures...")
             # get all unplayed matches
             # exclude fixtures that are to be rescheduled
             unplayed = Fixture.objects.filter(homeTeamGoals=-1).exclude(gameweekNumber=-1)
             # get only the games that the players team is involved in
             unplayed = unplayed.filter(Q(homeTeamID = existing.teamID) | Q(awayTeamID = existing.teamID))
 
-            print("ordering fixtures...")
             unplayed = unplayed.order_by('gameweekNumber')
             nextMatch = unplayed[0]
             if nextMatch.homeTeamID == existing.teamID:
