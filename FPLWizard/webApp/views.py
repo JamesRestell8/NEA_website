@@ -12,16 +12,18 @@ from .models import APIIDDictionary, FPLAPIStatsGameweek, PlayerTeamAndPosition,
 import pandas as pd
 from .forms import userTeamEntry
 from FPLWizard.settings import MEDIA_ROOT
+from .knapsackSolver import knapsackSolver
 
 # Home/Welcome screen
 def index(request):
     template = loader.get_template("webApp/index.html")
+    # TODO: need to convert data from PlayerTeamAndPosition into a table that knapsackSolver understands
+    playerTable = []
+    knapsack = knapsackSolver(playerTable, 1000, 15, [])
+    knapsack.solveKnapsack()
+
     context = {}
     return HttpResponse(template.render(context, request))
-
-def csvTeamToPandas(file):
-    pass
-
 
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
