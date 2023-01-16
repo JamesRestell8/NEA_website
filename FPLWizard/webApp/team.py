@@ -1,6 +1,5 @@
 import requests
 import time
-from requests import ConnectionError
 import pandas as pd
 import math
 

@@ -5,6 +5,7 @@ from django.template import loader
 from datetime import datetime
 from django.urls import reverse
 from django.contrib import messages
+import json
 
 from .databaseUpdates import DatabaseUpdater
 from .user import User
@@ -49,16 +50,17 @@ def myFPL(request):
     if request.method == "POST":
         form = userTeamEntry(request.POST)
         if form.is_valid():
-            for i in range(11):
-                team.append(form.cleaned_data[f"player{i+1}"])
-            for i in range(4):
-                team.append(form.cleaned_data[f"sub{i+1}"])
-        
-        user = User(team)
-        if user.isValid():
-            print("Team is valid!")
-            for i in range(len(team)):
-                team[i] = APIIDDictionary.objects.get(fplName=team[i]).understatName
+            try:
+                teamInfo = json.loads(form.cleanJSONField())
+                print(teamInfo.keys())
+                players = pd.DataFrame.from_dict(teamInfo['picks'])
+                team.append(players.columns)
+                chips = pd.DataFrame.from_dict(teamInfo['chips'])
+                team.append(chips.columns)
+                transfers = teamInfo['transfers']
+                team.append(transfers)
+            except ValueError:
+                team.append("Error")
         else:
             print("Team is not valid :(")
 

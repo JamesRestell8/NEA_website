@@ -12,13 +12,14 @@
 </head>
 
 {% block content %}
-    <h1>Finding your FPL ID</h1>
+    <h1>Getting your team information in JSON form</h1>
     <div id='center'>
             <div id='IDHelp'>
-            1. Login to fantasy premier league via fantasy.premierleague.com <br>
-            2. Navigate to the "Pick Team" page <br>
-            3. Go to "List View" <br>
-            4. For each player, click on the information button (i), and copy and paste their full name into the FPLWizard form.
+            1. Login to fantasy premier league via fantasy.premierleague.com using this browser<br>
+            2. Navigate to the "Points" page <br>
+            3. Copy the number in the URL after "fantasy.premierleague.com/entry/..." <br>
+            4. Add this number to the following URL "https://fantasy.premierleague.com/api/my-team/YOUR NUMBER HERE/"<br>
+            5. Copy and paste everything from the webpage, and paste it into the form on the MyFPL page!
             <img src="{% static 'webApp/listViewExample.jpg' %}" alt="Your view should look similar to this">
             <br>
             <br>
