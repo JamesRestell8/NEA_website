@@ -1,8 +1,9 @@
 import pandas as pd
 import time
 import numpy
+from django.db.models import Q
 
-from .models import Team, FPLAPIStatsGameweek
+from .models import Team, FPLAPIStatsGameweek, Fixture
 
 class knapsackSolver():
     def __init__(self, playerTable: list, budget: int, squadSize: int, answer: list):
@@ -106,7 +107,20 @@ class knapsackSolver():
                 j += 1
                 k += 1
         return table
+    
+    def getOpposition(self, teamID: int) -> str:
+        teamFixtures = Fixture.objects.filter(homeTeamGoals=-1).exclude(gameweekNumber=-1)
+        teamFixtures = teamFixtures.filter(Q(homeTeamID=teamID) | Q(awayTeamID=teamID))
+        teamFixtures = teamFixtures.order_by('gameweekNumber')
+        nextMatch = teamFixtures.first()
+        if nextMatch.homeTeamID == teamID:
+            nextOpponentName = Team.objects.get(teamID=nextMatch.awayTeamID).teamName
+        else:
+            nextOpponentName = Team.objects.get(teamID=nextMatch.homeTeamID).teamName
+        return nextOpponentName
 
+
+    # all tables should be indexed as follows [position, team, cost, xP, name, nextOpposition]
     def homemadeKnapsackWithNames(self, budget: int, maxPlayers: int, table: list, answer: list, positionsDone: list, teamsDone: list):
         print(len(answer))
         if len(answer) == 15:
@@ -117,7 +131,7 @@ class knapsackSolver():
                 print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
                 total += answer[i][3]
                 totalCost += answer[i][2]
-                temp.append((answer[i][4], answer[i][1], answer[i][0], answer[i][3]))
+                temp.append((answer[i][4], answer[i][1], answer[i][0], answer[i][3], answer[i][2], self.getOpposition(answer[i][1])))
             
             temp = self.mergeSort2DBy(temp, 2)
             positions = {
@@ -128,7 +142,7 @@ class knapsackSolver():
             }
             toReturn = []
             for entry in temp:
-                toReturn.append((entry[0], Team.objects.get(teamID=entry[1]).teamName, positions.get(entry[2]), entry[3]))
+                toReturn.append((entry[0], Team.objects.get(teamID=entry[1]).teamName, positions.get(entry[2]), entry[3], entry[4], entry[5]))
             print(f"Max Points: {total}")
             print(f"Players used: {len(answer)}")
             print(f"Budget used: {totalCost}")

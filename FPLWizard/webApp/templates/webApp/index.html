@@ -29,14 +29,18 @@
 <table>
     <tr>
         <th>Player Name</th>
+        <th>Cost</th>
         <th>Team</th>
+        <th>Next Opposition</th>
         <th>Position</th>
         <th>Expected Points</th>
     </tr>
-    {% for name, team, position, xP in dreamTeam %}
+    {% for name, team, position, xP, cost, nextOpposition in dreamTeam %}
     <tr>
         <td>{{ name }}</td>
+        <td>{{ cost }}</td>
         <td>{{ team }}</td>
+        <td>{{ nextOpposition }}</td>
         <td>{{ position }}</td>
         <td>{{ xP }}</td>
     </tr>
