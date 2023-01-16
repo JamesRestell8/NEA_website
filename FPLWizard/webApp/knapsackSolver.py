@@ -2,7 +2,7 @@ import pandas as pd
 import time
 import numpy
 
-from .models import Team
+from .models import Team, FPLAPIStatsGameweek
 
 class knapsackSolver():
     def __init__(self, playerTable: list, budget: int, squadSize: int, answer: list):
@@ -65,6 +65,8 @@ class knapsackSolver():
                 answer.append(row)
         return answer
 
+    def getNextGameweek(self):
+        return FPLAPIStatsGameweek.objects.all().order_by('-fpl_gameweekNumber').first().fpl_gameweekNumber
 
     def removeTeam(self, table: list, team: int) -> list:
         for row in table:
@@ -130,7 +132,7 @@ class knapsackSolver():
             print(f"Max Points: {total}")
             print(f"Players used: {len(answer)}")
             print(f"Budget used: {totalCost}")
-            return (toReturn, total)
+            return (toReturn, total, self.getNextGameweek())
 
         if len(answer) > 1:
             positions = []

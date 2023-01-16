@@ -36,6 +36,7 @@ def index(request):
     context = {
         'dreamTeam': dreamTeam[0],
         'total': dreamTeam[1],
+        'nextGameweek': dreamTeam[2] + 1,
     }
     return HttpResponse(template.render(context, request))
 
