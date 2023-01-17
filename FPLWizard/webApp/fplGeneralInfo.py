@@ -23,7 +23,9 @@ class PlayerGeneralInfoUpdater(databaseManager):
                 if Fixture.objects.get(fixtureID=mostRecentGameweeks[count].fpl_fixtureID).homeTeamGoals == -1:
                     count += 1
                 else:
-                    scores.append(mostRecentGameweeks[count].fpl_total_points)
+                    ict = mostRecentGameweeks[count].fpl_influence + mostRecentGameweeks[count].fpl_creativity + mostRecentGameweeks[count].fpl_threat
+                    ga = mostRecentGameweeks[count].fpl_goals + mostRecentGameweeks[count].fpl_assists
+                    scores.append(((ict / 50) + mostRecentGameweeks[count].fpl_clean_sheets + (ga * 2) + (mostRecentGameweeks[count].fpl_minutes) / 90))
                     count += 1
             toReturn = self.averageList(scores)
         except IndexError:
@@ -49,6 +51,7 @@ class PlayerGeneralInfoUpdater(databaseManager):
                     toUse = chain
                 else:
                     toUse = buildup
+                toUse += (mostRecentGameweeks[count].understat_xA + mostRecentGameweeks[count].understat_key_passes) / 2
                 scores.append(toUse * 2)
                 count += 1
             toReturn = self.averageList(scores)
@@ -130,5 +133,4 @@ class PlayerGeneralInfoUpdater(databaseManager):
             # scale a players xP based on their win probability
             existing.xP = existing.form * ((TeamUpdater.getProbability(playerTeamStrength, oppositionStrength, isHome) / 2) + 0.5)
             existing.save()
-            print(f"Done player {existing.playerID}")
 

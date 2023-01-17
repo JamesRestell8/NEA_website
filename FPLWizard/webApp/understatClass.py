@@ -58,7 +58,6 @@ class UnderstatStats():
 
         async def main(understatID: int):
             async with aiohttp.ClientSession() as session:
-                print("in loop")
                 understat = Understat(session)
                 player_matches = await understat.get_player_matches(
                             understatID, season="2022")
