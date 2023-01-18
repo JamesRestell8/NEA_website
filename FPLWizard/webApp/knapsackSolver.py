@@ -15,16 +15,14 @@ class knapsackSolver():
         self.teamsDone = []
     
     def checkTeams(self, items: list, limit: int, toExclude: list) -> int:
-        unique = []
-        for item in items:
-            if item not in unique:
-                unique.append(item)
+        unique = [i + 1 for i in range(20)]
+        print(toExclude)
 
         count = [0 for i in range(len(unique))]
 
         for item in items:
             count[unique.index(item)] += 1
-
+        print(f"Count: {count}")
         for num in count:
             if num >= limit:
                 if unique[count.index(num)] not in toExclude:
@@ -69,12 +67,6 @@ class knapsackSolver():
     def getNextGameweek(self):
         return FPLAPIStatsGameweek.objects.all().order_by('-fpl_gameweekNumber').first().fpl_gameweekNumber
 
-    def removeTeam(self, table: list, team: int) -> list:
-        for row in table:
-            if row[1] == team:
-                table.pop(table.index(row)) 
-        return table
-
     # merge sort a 2D array based on a given index
     def mergeSort2DBy(self, table: list, index: int) -> list:
         if len(table) > 1:
@@ -114,9 +106,9 @@ class knapsackSolver():
         teamFixtures = teamFixtures.order_by('gameweekNumber')
         nextMatch = teamFixtures.first()
         if nextMatch.homeTeamID == teamID:
-            nextOpponentName = Team.objects.get(teamID=nextMatch.awayTeamID).teamName
+            nextOpponentName = Team.objects.get(teamID=nextMatch.awayTeamID).teamName + " (H)"
         else:
-            nextOpponentName = Team.objects.get(teamID=nextMatch.homeTeamID).teamName
+            nextOpponentName = Team.objects.get(teamID=nextMatch.homeTeamID).teamName + " (A)"
         return nextOpponentName
 
 
@@ -157,11 +149,12 @@ class knapsackSolver():
             # remove players who play in a position that is already full
             positionToRemove = self.checkPositions(positions, positionsDone) 
             table = self.removePosition(table, positionToRemove)
-            positionsDone.append(positionToRemove)
+            if positionToRemove != 0:
+                positionsDone.append(positionToRemove)
             # remove players who play for a team who already have 3 players in the team
             teamToRemove = self.checkTeams(teams, 3, teamsDone)
-            table = self.removeTeam(table, teamToRemove)
-            teamsDone.append(teamToRemove)
+            if teamToRemove != 0:
+                teamsDone.append(teamToRemove)
 
         # only populate the density values the first time the function is called
         if len(answer) == 0:
@@ -172,7 +165,6 @@ class knapsackSolver():
         table = self.mergeSort2DBy(table, 5)
         # ensures that the algorithm never buys a player that is so expensive that it can't fill in the rest of the squad
         minBudget = 45 * (maxPlayers - 1)
-        print(len(table))
         if maxPlayers != 0:
             # makes sure that the algo makes the most of its budget near the end of squad selection
             minNextPlayerPrice = (budget / maxPlayers) - 20
@@ -186,8 +178,7 @@ class knapsackSolver():
                 minNextPlayerPrice = maxPriceRemaining - 10
             # add the first player that is affordable, and above the minimum price value
             for i in range(len(table)):
-                print(table[i][4])
-                if (budget - table[i][2] >= minBudget) and table[i][2] >= minNextPlayerPrice:
+                if (budget - table[i][2] >= minBudget) and table[i][2] >= minNextPlayerPrice and table[i][1] not in teamsDone:
                     answer.append((table[i][0], table[i][1], table[i][2], table[i][3], table[i][4]))
                     cost = table[i][2]
                     table.pop(i)

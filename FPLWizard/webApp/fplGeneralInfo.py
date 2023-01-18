@@ -163,6 +163,6 @@ class PlayerGeneralInfoUpdater(databaseManager):
                 isHome = False
                 oppositionStrength = Team.objects.get(teamID=nextMatch.homeTeamID).teamStrength
             # scale a players xP based on their win probability
-            existing.xP = existing.form * ((TeamUpdater.getProbability(playerTeamStrength, oppositionStrength, isHome) / 2) + 0.5)
+            existing.xP = existing.form * ((TeamUpdater.getProbability(playerTeamStrength, oppositionStrength, isHome)) + 0.5)
             existing.save()
 
