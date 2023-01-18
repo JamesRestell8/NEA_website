@@ -14,50 +14,82 @@ from .team import TeamUpdater
 
 class PlayerGeneralInfoUpdater(databaseManager):
     def updateForm(self, fplID: int) -> float:
+        position = PlayerTeamAndPosition.objects.get(playerID=fplID).position
         try:
             playerGameweeks = FPLAPIStatsGameweek.objects.filter(fpl_id=fplID)
             mostRecentGameweeks = playerGameweeks.order_by('-fpl_gameweekNumber')
-            scores = []
+            icts = []
+            minutes = []
+            cleanSheets = []
             count = 0
-            while len(scores) != 5:
+            while len(icts) != 5:
                 if Fixture.objects.get(fixtureID=mostRecentGameweeks[count].fpl_fixtureID).homeTeamGoals == -1:
                     count += 1
                 else:
                     ict = mostRecentGameweeks[count].fpl_influence + mostRecentGameweeks[count].fpl_creativity + mostRecentGameweeks[count].fpl_threat
-                    ga = mostRecentGameweeks[count].fpl_goals + mostRecentGameweeks[count].fpl_assists
-                    scores.append(((ict / 50) + mostRecentGameweeks[count].fpl_clean_sheets + (ga * 2) + (mostRecentGameweeks[count].fpl_minutes) / 90))
+                    mins = mostRecentGameweeks[count].fpl_minutes
+                    cleanSheet = mostRecentGameweeks[count].fpl_clean_sheets
+                    icts.append(ict)
+                    minutes.append(mins)
+                    cleanSheets.append(cleanSheet)
                     count += 1
-            toReturn = self.averageList(scores)
+            ictScore = self.averageList(icts)
+            minutesScore = self.averageList(minutes)
+            cleanSheetScore = self.averageList(cleanSheets)
         except IndexError:
-            toReturn = 0
-        toReturn += self.getUnderlyings(fplID)
-        return float(toReturn)
+            ictScore = 0
+            minutesScore = 0
+            cleanSheetScore = 0
+        underlyings = self.getUnderlyings(fplID)
+        xG = underlyings[0]
+        xA = underlyings[1]
+        xGChain = underlyings[2]
+        return self.getForm(position, xG, xA, xGChain, cleanSheetScore, minutesScore, ictScore)
 
-    def getUnderlyings(self, fplID: int):
+    def getForm(self, position: int, xG: float, xA: float, xGChain: float, cleanSheets: float, minutes: float, ICT: float) -> float:
+        if position == 1:
+            return (xGChain * 3) + (cleanSheets * 5) + (minutes / 60) + (ICT / 100)
+        elif position == 2:
+            return (xG * 4) + (xA * 4) + (cleanSheets * 5) + (minutes / 60) + (ICT / 50)
+        elif position == 3:
+            return (xG * 5) + (xA * 4) + (cleanSheets * 2) + (minutes / 60) + (ICT / 100)
+        elif position == 4:
+            return (xG * 5) + (xA * 3) + (minutes / 90) + (ICT / 100)
+        else:
+            return 0
+
+    def getUnderlyings(self, fplID: int) -> tuple:
         try:
             understatID = APIIDDictionary.objects.get(fplID=fplID).understatID
         except APIIDDictionary.DoesNotExist:
-            return 0
+            return 0, 0, 0
         
         try:
             playerGameweeks = UnderstatAPIStatsGameweek.objects.filter(understat_id=understatID)
             mostRecentGameweeks = playerGameweeks.order_by('-understat_fixtureID')
-            scores = []
+            xGs = []
+            xAs = []
+            xGChains = []
             count = 0
-            while len(scores) != 5:
+            while len(xGs) != 5:
                 chain = mostRecentGameweeks[count].understat_xG_chain
                 buildup = mostRecentGameweeks[count].understat_xG_buildup
                 if chain >= buildup:
                     toUse = chain
                 else:
                     toUse = buildup
-                toUse += (mostRecentGameweeks[count].understat_xA + mostRecentGameweeks[count].understat_key_passes) / 2
-                scores.append(toUse * 2)
                 count += 1
-            toReturn = self.averageList(scores)
+                xGs.append(mostRecentGameweeks[count].understat_xG)
+                xAs.append(mostRecentGameweeks[count].understat_xA)
+                xGChains.append(toUse)
+            xG = self.averageList(xGs)
+            xA = self.averageList(xAs)
+            xGc = self.averageList(xGChains)
         except IndexError:
-            toReturn = 0
-        return float(toReturn)
+            xG = 0
+            xA = 0 
+            xGc = 0
+        return (xG, xA, xGc)
 
     def averageList(self, array: list) -> float:
         total = 0
