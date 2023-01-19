@@ -15,14 +15,13 @@ class knapsackSolver():
         self.teamsDone = []
     
     def checkTeams(self, items: list, limit: int, toExclude: list) -> int:
+        # a list of all the team codes (numbers 1-20)
         unique = [i + 1 for i in range(20)]
-        print(toExclude)
-
+        # a list to keep a track of how many players have been picked from team i - 1.
         count = [0 for i in range(len(unique))]
 
         for item in items:
             count[unique.index(item)] += 1
-        print(f"Count: {count}")
         for num in count:
             if num >= limit:
                 if unique[count.index(num)] not in toExclude:
@@ -114,7 +113,6 @@ class knapsackSolver():
 
     # all tables should be indexed as follows [position, team, cost, xP, name, nextOpposition]
     def homemadeKnapsackWithNames(self, budget: int, maxPlayers: int, table: list, answer: list, positionsDone: list, teamsDone: list):
-        print(len(answer))
         if len(answer) == 15:
             total = 0
             totalCost = 0

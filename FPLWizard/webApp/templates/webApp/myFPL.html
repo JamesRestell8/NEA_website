@@ -38,9 +38,9 @@
     </form>
 
     <ul>
-    {% for item in content %}
+    {% for element, price, captain, vcaptain, xP, name in content %}
         <li>
-            <h3>{{ item }}</h3>
+            <h3>{{ name }}, {{ price }}, {{ captain }}, {{ vcaptain }}, {{xP}}</h3>
         </li>
     {% endfor %}
     </ul>

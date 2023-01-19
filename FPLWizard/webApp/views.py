@@ -44,9 +44,8 @@ def index(request):
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
 
-    team = []
-
-    # it it's not GET, we know it's POST
+    userTeam = [] # a 2D array that contains an entry for every player in the team
+    # it it's not POST, we know it's GET
     if request.method == "POST":
         form = userTeamEntry(request.POST)
         if form.is_valid():
@@ -54,20 +53,25 @@ def myFPL(request):
                 teamInfo = json.loads(form.cleanJSONField())
                 print(teamInfo.keys())
                 players = pd.DataFrame.from_dict(teamInfo['picks'])
-                team.append(players.columns)
-                chips = pd.DataFrame.from_dict(teamInfo['chips'])
-                team.append(chips.columns)
-                transfers = teamInfo['transfers']
-                team.append(transfers)
+                ids = players[['element', 'purchase_price', 'is_captain', 'is_vice_captain']]
+                ids = ids.to_numpy().tolist()
+                for player in ids:
+                    # userTeam is indexed exactly as ids above but adds the xP metric at userTeam[4] and name at userTeam[5]
+                    userTeam.append((player[0], player[1], player[2], player[3], 
+                    PlayerTeamAndPosition.objects.get(playerID=player[0]).xP, 
+                    APIIDDictionary.objects.get(fplID=player[0]).understatName))
+
+                chipInformation = pd.DataFrame.from_dict(teamInfo['chips'])
+                transferInformation = teamInfo['transfers']
             except ValueError:
-                team.append("Error")
+                userTeam = ["Error"]
         else:
             print("Team is not valid :(")
 
     else:
         form = userTeamEntry()
     context = {
-        'content': team,
+        'content': userTeam,
         'form': form
     }
     return HttpResponse(template.render(context, request))
