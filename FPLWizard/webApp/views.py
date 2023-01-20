@@ -45,6 +45,7 @@ def index(request):
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
 
+    suggestionInfo = [0.0, 1000.0, [], []]
     userTeam = [] # a 2D array that contains an entry for every player in the team
     # it it's not POST, we know it's GET
     if request.method == "POST":
@@ -63,6 +64,7 @@ def myFPL(request):
 
                 chipInformation = pd.DataFrame.from_dict(teamInfo['chips'])
                 transferInformation = teamInfo['transfers']
+                suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation).getRecommendations()
             except ValueError:
                 userTeam = ["Error"]
         else:
@@ -71,15 +73,15 @@ def myFPL(request):
     else:
         form = userTeamEntry()
 
-    suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation)
     
     context = {
         'content': userTeam,
         'form': form,
-        'budget': 0,
-        'teamValue': 0,
-        'transfersRecommended': ["Mbappe to Liverpool"],
-        'chipRecommend': ["Free Hit", "Triple Captain", "Bench Boost", "Wildcard"],
+        'budget': suggestionInfo[0],
+        'teamValue': suggestionInfo[1],
+        'valueChange':((suggestionInfo[0] +  suggestionInfo[1]) - 1000),
+        'transfersRecommended': suggestionInfo[2],
+        'chipRecommend': suggestionInfo[3],
     }
     return HttpResponse(template.render(context, request))
 
