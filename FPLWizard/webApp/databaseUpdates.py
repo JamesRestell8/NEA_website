@@ -85,7 +85,8 @@ class DatabaseUpdater():
 
     def tasksInOrder(self):
         # time delay to allow time to perform admin tasks in the terminal before print statements
-        time.sleep(5)
+        time.sleep(2)
+        masterStart = time.time()
         # executes in less than 20 seconds
         self.setApiIdDictionary()
         print("ID dictionary done", end='\n')
@@ -95,16 +96,18 @@ class DatabaseUpdater():
         print("teams updated", end="\n")
         # # ~ 5 mins
         start = time.time()
-        #self.populateAllFPLPlayerStatsByGameweek()
+        self.populateAllFPLPlayerStatsByGameweek()
         end = time.time()
         print(f"FPL database done in {end - start} seconds")
         # ~10 mins
         start = time.time()
-        #self.populateAllUnderstatPlayerStatsByGameweek()
+        self.populateAllUnderstatPlayerStatsByGameweek()
         end = time.time()
         print(f"Understat database done in {end - start} seconds")
         print("general info...")
         start = time.time()
         self.updateGeneralInfo()
         end = time.time()
+        masterEnd = time.time()
         print(f"General info updated in {end-start} seconds", end='\n')
+        print(f"All database jobs done in {masterEnd-masterStart} seconds")
