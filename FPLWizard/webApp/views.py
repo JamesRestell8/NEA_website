@@ -14,6 +14,7 @@ import pandas as pd
 from .forms import userTeamEntry
 from FPLWizard.settings import MEDIA_ROOT
 from .knapsackSolver import knapsackSolver
+from .transferRecommender import TransferRecommender
 
 # Home/Welcome screen
 def index(request):
@@ -51,7 +52,6 @@ def myFPL(request):
         if form.is_valid():
             try:
                 teamInfo = json.loads(form.cleanJSONField())
-                print(teamInfo.keys())
                 players = pd.DataFrame.from_dict(teamInfo['picks'])
                 ids = players[['element', 'purchase_price', 'is_captain', 'is_vice_captain']]
                 ids = ids.to_numpy().tolist()
@@ -70,9 +70,16 @@ def myFPL(request):
 
     else:
         form = userTeamEntry()
+
+    suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation)
+    
     context = {
         'content': userTeam,
-        'form': form
+        'form': form,
+        'budget': 0,
+        'teamValue': 0,
+        'transfersRecommended': ["Mbappe to Liverpool"],
+        'chipRecommend': ["Free Hit", "Triple Captain", "Bench Boost", "Wildcard"],
     }
     return HttpResponse(template.render(context, request))
 
