@@ -64,6 +64,9 @@ def myFPL(request):
 
                 chipInformation = pd.DataFrame.from_dict(teamInfo['chips'])
                 transferInformation = teamInfo['transfers']
+                userTotal = 0
+                for entry in userTeam:
+                    userTotal += entry[4]
                 suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation).getRecommendations()
             except ValueError:
                 userTeam = ["Error"]
@@ -76,6 +79,7 @@ def myFPL(request):
     
     context = {
         'content': userTeam,
+        "userTotalXP": userTotal,
         'form': form,
         'budget': suggestionInfo[0],
         'teamValue': suggestionInfo[1],
