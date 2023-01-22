@@ -61,8 +61,6 @@ class FixtureUpdater(databaseManager):
                     fixtureID=int(fixtures['id'][i]),
                     homeTeamID=int(fixtures['team_h'][i]),
                     awayTeamID=int(fixtures['team_a'][i]),
-                    homeTeamStrength=0,
-                    awayTeamStrength=0,
                     homeTeamGoals=homeScore,
                     awayTeamGoals=awayScore,
                     gameweekNumber=gameweekNumber

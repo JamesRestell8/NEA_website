@@ -1,5 +1,7 @@
 import pandas as pd
 
+from .models import PlayerTeamAndPosition, FPLAPIStatsGameweek, APIIDDictionary
+from .knapsackSolver import knapsackSolver
 
 class TransferRecommender():
     def __init__(self, currentTeam: list, transferInfo: dict, currentChips: pd.DataFrame) -> None:
@@ -13,8 +15,72 @@ class TransferRecommender():
     def getTeamValue(self):
         return self.transferInfo.get("value")
     
+    def getTeamWithoutPlayer(self, playerToRemove: list, team: list) -> list:
+        toReturn = []
+        for item in team:
+            if item[4] != playerToRemove[4]:
+                toReturn.append(item)
+        
+        return toReturn
+
+    def getAddedPlayer(self, oldTeam: list, newTeam: list):
+        oldTeamNames = []
+        for player in oldTeam:
+            oldTeamNames.append(player[4])
+
+        for player in newTeam:
+            if player[0] not in oldTeamNames:
+                return player
+        return ["Error" for i in range(4)]
+
     def recommendTransfers(self):
-        return ["Mbappe to Liverpool"]
+        # knapsack algo requires [position, team, cost, xP, name]
+        knapsackFriendlyTeam = []
+        for player in self.currentTeam:
+            currentPlayer = PlayerTeamAndPosition.objects.get(playerID=player[0])
+            currentPlayerInfo = [
+                currentPlayer.position, 
+                currentPlayer.teamID,
+                FPLAPIStatsGameweek.objects.filter(fpl_id=player[0]).order_by('-fpl_gameweekNumber').first().fpl_cost,
+                currentPlayer.xP,
+                APIIDDictionary.objects.get(fplID=player[0]).understatName,
+            ]
+            knapsackFriendlyTeam.append(currentPlayerInfo)
+        
+        # get all available players in here
+        playerTable = []
+        players = PlayerTeamAndPosition.objects.all()
+        for player in players:
+            try:
+                cost = FPLAPIStatsGameweek.objects.filter(fpl_id=player.playerID).order_by('-fpl_gameweekNumber').first().fpl_cost
+                name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
+                playerTable.append([player.position, player.teamID, cost, player.xP, name])
+            except AttributeError:
+                pass
+            except APIIDDictionary.DoesNotExist:
+                pass
+
+        recommedations = []
+
+        # an array of 2D arrays, each representing a 14 man team with one addition to be made
+        for player in knapsackFriendlyTeam:
+            if player[3] <= 4:
+                newTeam = self.getTeamWithoutPlayer(player, knapsackFriendlyTeam)
+                newTeamNames = []
+                for player in newTeam:
+                    newTeamNames.append(player[4])
+                positionsDone = [i + 1 for i in range(4) if (i + 1) != player[0]]
+                teamsDone = [i + 1 for i in range(20) if (i + 1) != player[1]]
+                optimisedTeam = knapsackSolver(playerTable, self.getBudget() + player[2], 1, newTeam, positionsDone, teamsDone)
+                dreamTeam = optimisedTeam.solveKnapsack()
+                # find the player that was added
+                newPlayer = "Error"
+                for player in dreamTeam[0]:
+                    if player[0] not in newTeamNames:
+                        newPlayer = player[0]
+                recommedations.append(f"Transfer OUT {player[0]} for {newPlayer}")
+        return recommedations
+
     
     def chip(self, chipName: str) -> str:
         userTotal = 0

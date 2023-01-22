@@ -32,7 +32,7 @@ def index(request):
         except APIIDDictionary.DoesNotExist:
             pass
 
-    knapsack = knapsackSolver(playerTable, 1000, 15, [])
+    knapsack = knapsackSolver(playerTable, 1000, 15, [], [], [])
     dreamTeam = knapsack.solveKnapsack()
 
     context = {
@@ -45,6 +45,7 @@ def index(request):
 def myFPL(request):
     template = loader.get_template("webApp/myFPL.html")
 
+    userTotal = 0
     suggestionInfo = [0.0, 1000.0, [], []]
     userTeam = [] # a 2D array that contains an entry for every player in the team
     # it it's not POST, we know it's GET
@@ -64,7 +65,6 @@ def myFPL(request):
 
                 chipInformation = pd.DataFrame.from_dict(teamInfo['chips'])
                 transferInformation = teamInfo['transfers']
-                userTotal = 0
                 for entry in userTeam:
                     userTotal += entry[4]
                 suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation).getRecommendations()

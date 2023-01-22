@@ -6,13 +6,13 @@ from django.db.models import Q
 from .models import Team, FPLAPIStatsGameweek, Fixture
 
 class knapsackSolver():
-    def __init__(self, playerTable: list, budget: int, squadSize: int, answer: list):
+    def __init__(self, playerTable: list, budget: int, squadSize: int, answer: list, positionsDone: list, teamsDone: list):
         self.playerTable = playerTable
         self.budget = budget
         self.squadSize = squadSize
         self.answer = answer
-        self.positionsDone = []
-        self.teamsDone = []
+        self.positionsDone = positionsDone
+        self.teamsDone = teamsDone
     
     def checkTeams(self, items: list, limit: int, toExclude: list) -> int:
         # a list of all the team codes (numbers 1-20)
@@ -155,7 +155,7 @@ class knapsackSolver():
                 teamsDone.append(teamToRemove)
 
         # only populate the density values the first time the function is called
-        if len(answer) == 0:
+        if len(answer) == 0 or len(answer) == 14:
             for i in range(len(table)):
                 table[i].append(int(table[i][3]) / int(table[i][2]))
 
