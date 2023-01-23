@@ -83,34 +83,25 @@ class TransferRecommender():
         # an array of 2D arrays, each representing a 14 man team with one addition to be made
         for player in knapsackFriendlyTeam:
             if player[3] <= 4:
-                print("\n", player)
                 newTeam = self.getTeamWithoutPlayer(player, knapsackFriendlyTeam)
-                print("\n", player)
+
                 newTeamNames = []
                 newTeamTeams = []
                 for playerName in newTeam:
                     newTeamNames.append(playerName[4])
                     newTeamTeams.append(playerName[1])
+
                 positionsDone = []
                 teamsDone = []
-                print(player)
-                print("POSITIONS:")
                 for i in range(4):
                     if (i + 1) != player[0]:
-                        print(i + 1)
-                        print(player[0])
-                        print("\n")
                         positionsDone.append(i + 1)
                 teamsDone = self.getTeamsDone(newTeam)
-                print("\n\n\n")
-                print("Doing knapsack with:")
-                print(f"position: {positionsDone}")
-                print(f"teams: {teamsDone}")
-                print(newTeamNames)
+
                 optimisedTeam = knapsackSolver(playerTable, self.getBudget() + player[2], 1, newTeam, positionsDone, teamsDone)
                 dreamTeam = optimisedTeam.solveKnapsack()
+                
                 # find the player that was added
-                print("Knapsack team:")
                 newPlayer = "Error"
                 for dreamTeamPlayer in dreamTeam[0]:
                     print(dreamTeamPlayer[0])

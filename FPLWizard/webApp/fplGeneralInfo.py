@@ -48,13 +48,13 @@ class PlayerGeneralInfoUpdater(databaseManager):
 
     def getForm(self, position: int, xG: float, xA: float, xGChain: float, cleanSheets: float, minutes: float, ICT: float) -> float:
         if position == 1:
-            return (xGChain * 3) + (cleanSheets * 5) + (minutes / 60) + (ICT / 100)
+            return (xGChain * 3) + (cleanSheets * 6) + (minutes / 60) + (ICT / 100)
         elif position == 2:
-            return (xG * 4) + (xA * 4) + (cleanSheets * 5) + (minutes / 60) + (ICT / 50)
+            return (xG * 4) + (xA * 4) + (cleanSheets * 5) + (minutes / 60) + (ICT / 100)
         elif position == 3:
             return (xG * 5) + (xA * 4) + (cleanSheets * 2) + (minutes / 60) + (ICT / 100)
         elif position == 4:
-            return (xG * 5) + (xA * 3) + (minutes / 90) + (ICT / 100)
+            return (xG * 5) + (xA * 4) + (minutes / 90) + (ICT / 100)
         else:
             return 0
 

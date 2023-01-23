@@ -118,7 +118,7 @@ class knapsackSolver():
             totalCost = 0
             temp = []
             for i in range(len(answer)):
-                #print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
+                print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
                 total += answer[i][3]
                 totalCost += answer[i][2]
                 temp.append((answer[i][4], answer[i][1], answer[i][0], answer[i][3], answer[i][2], self.getOpposition(answer[i][1])))
@@ -159,13 +159,17 @@ class knapsackSolver():
             for i in range(len(table)):
                 table[i].append(int(table[i][3]) / int(table[i][2]))
 
-        # sort by descending density values
-        table = self.mergeSort2DBy(table, 5)
         # ensures that the algorithm never buys a player that is so expensive that it can't fill in the rest of the squad
         minBudget = 45 * (maxPlayers - 1)
-        if maxPlayers != 0:
-            # makes sure that the algo makes the most of its budget near the end of squad selection
-            minNextPlayerPrice = (budget / maxPlayers) - 20
+
+        if len(answer) == 14:
+            # on the last pick, we don't need to maximise value, we just want the most points
+            table = self.mergeSort2DBy(table, 3)
+            minNextPlayerPrice = 40
+        else:
+            # sort by descending density values
+            table = self.mergeSort2DBy(table, 5)
+            minNextPlayerPrice = (budget / maxPlayers) - 30
             costs = []
             for entry in table:
                 costs.append(entry[2])
@@ -174,6 +178,10 @@ class knapsackSolver():
             # ensures that the min price never crashes the algorithm by being more than the most expensive player
             if minNextPlayerPrice > maxPriceRemaining:
                 minNextPlayerPrice = maxPriceRemaining - 10
+        
+        if maxPlayers != 0:
+            # makes sure that the algo makes the most of its budget near the end of squad selection
+
             # add the first player that is affordable, and above the minimum price value
             for i in range(len(table)):
                 if (budget - table[i][2] >= minBudget) and table[i][2] >= minNextPlayerPrice and table[i][1] not in teamsDone and table[i][0] not in positionsDone:
