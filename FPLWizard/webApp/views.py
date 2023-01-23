@@ -67,16 +67,19 @@ def myFPL(request):
                 transferInformation = teamInfo['transfers']
                 for entry in userTeam:
                     userTotal += entry[4]
+                print("before suggestionInfo")
                 suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation).getRecommendations()
-            except ValueError:
-                userTeam = ["Error"]
+                print("after transfer...")
+            except Exception as e:
+                print(e)
+                userTeam = ["Error" for i in range(6)]
         else:
             print("Team is not valid :(")
 
     else:
         form = userTeamEntry()
 
-    
+    print(userTeam)
     context = {
         'content': userTeam,
         "userTotalXP": userTotal,

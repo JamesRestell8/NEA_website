@@ -33,6 +33,20 @@ class TransferRecommender():
                 return player
         return ["Error" for i in range(4)]
 
+    def getTeamsDone(self, teamPlayers: list) -> list:
+        unique = [i + 1 for i in range(20)]
+        count = [0 for i in range(len(unique))]
+        for item in teamPlayers:
+            count[unique.index(item[1])] += 1
+        
+        toReturn = []
+        index = 0
+        for num in count:
+            if num >= 3:
+                toReturn.append(unique[index])
+            index += 1
+        return toReturn
+
     def recommendTransfers(self):
         # knapsack algo requires [position, team, cost, xP, name]
         knapsackFriendlyTeam = []
@@ -55,7 +69,12 @@ class TransferRecommender():
             try:
                 cost = FPLAPIStatsGameweek.objects.filter(fpl_id=player.playerID).order_by('-fpl_gameweekNumber').first().fpl_cost
                 name = APIIDDictionary.objects.get(fplID=player.playerID).understatName
-                playerTable.append([player.position, player.teamID, cost, player.xP, name])
+                toAdd = True
+                for existingPlayer in knapsackFriendlyTeam:
+                    if name == existingPlayer[4]:
+                        toAdd = False
+                if toAdd:
+                    playerTable.append([player.position, player.teamID, cost, player.xP, name])
             except AttributeError:
                 pass
             except APIIDDictionary.DoesNotExist:
@@ -68,8 +87,10 @@ class TransferRecommender():
                 newTeam = self.getTeamWithoutPlayer(player, knapsackFriendlyTeam)
                 print("\n", player)
                 newTeamNames = []
+                newTeamTeams = []
                 for playerName in newTeam:
                     newTeamNames.append(playerName[4])
+                    newTeamTeams.append(playerName[1])
                 positionsDone = []
                 teamsDone = []
                 print(player)
@@ -80,10 +101,7 @@ class TransferRecommender():
                         print(player[0])
                         print("\n")
                         positionsDone.append(i + 1)
-                
-                for i in range(20):
-                    if (i + 1) != player[1]:
-                        teamsDone.append(i + 1)
+                teamsDone = self.getTeamsDone(newTeam)
                 print("\n\n\n")
                 print("Doing knapsack with:")
                 print(f"position: {positionsDone}")

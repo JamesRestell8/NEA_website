@@ -176,7 +176,7 @@ class knapsackSolver():
                 minNextPlayerPrice = maxPriceRemaining - 10
             # add the first player that is affordable, and above the minimum price value
             for i in range(len(table)):
-                if (budget - table[i][2] >= minBudget) and table[i][2] >= minNextPlayerPrice and table[i][1] not in teamsDone:
+                if (budget - table[i][2] >= minBudget) and table[i][2] >= minNextPlayerPrice and table[i][1] not in teamsDone and table[i][0] not in positionsDone:
                     answer.append((table[i][0], table[i][1], table[i][2], table[i][3], table[i][4]))
                     cost = table[i][2]
                     table.pop(i)
