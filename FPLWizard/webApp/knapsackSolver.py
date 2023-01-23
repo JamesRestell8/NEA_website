@@ -118,7 +118,7 @@ class knapsackSolver():
             totalCost = 0
             temp = []
             for i in range(len(answer)):
-                print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
+                #print(f"Player: {answer[i][4]} (Cost: {answer[i][2]} --- Points: {answer[i][3]}) - Position: {answer[i][0]}")
                 total += answer[i][3]
                 totalCost += answer[i][2]
                 temp.append((answer[i][4], answer[i][1], answer[i][0], answer[i][3], answer[i][2], self.getOpposition(answer[i][1])))

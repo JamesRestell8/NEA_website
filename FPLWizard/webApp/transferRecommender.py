@@ -49,6 +49,7 @@ class TransferRecommender():
         
         # get all available players in here
         playerTable = []
+        recommedations = []
         players = PlayerTeamAndPosition.objects.all()
         for player in players:
             try:
@@ -59,26 +60,46 @@ class TransferRecommender():
                 pass
             except APIIDDictionary.DoesNotExist:
                 pass
-
-        recommedations = []
-
+        
         # an array of 2D arrays, each representing a 14 man team with one addition to be made
         for player in knapsackFriendlyTeam:
             if player[3] <= 4:
+                print("\n", player)
                 newTeam = self.getTeamWithoutPlayer(player, knapsackFriendlyTeam)
+                print("\n", player)
                 newTeamNames = []
-                for player in newTeam:
-                    newTeamNames.append(player[4])
-                positionsDone = [i + 1 for i in range(4) if (i + 1) != player[0]]
-                teamsDone = [i + 1 for i in range(20) if (i + 1) != player[1]]
+                for playerName in newTeam:
+                    newTeamNames.append(playerName[4])
+                positionsDone = []
+                teamsDone = []
+                print(player)
+                print("POSITIONS:")
+                for i in range(4):
+                    if (i + 1) != player[0]:
+                        print(i + 1)
+                        print(player[0])
+                        print("\n")
+                        positionsDone.append(i + 1)
+                
+                for i in range(20):
+                    if (i + 1) != player[1]:
+                        teamsDone.append(i + 1)
+                print("\n\n\n")
+                print("Doing knapsack with:")
+                print(f"position: {positionsDone}")
+                print(f"teams: {teamsDone}")
+                print(newTeamNames)
                 optimisedTeam = knapsackSolver(playerTable, self.getBudget() + player[2], 1, newTeam, positionsDone, teamsDone)
                 dreamTeam = optimisedTeam.solveKnapsack()
                 # find the player that was added
+                print("Knapsack team:")
                 newPlayer = "Error"
-                for player in dreamTeam[0]:
-                    if player[0] not in newTeamNames:
-                        newPlayer = player[0]
-                recommedations.append(f"Transfer OUT {player[0]} for {newPlayer}")
+                for dreamTeamPlayer in dreamTeam[0]:
+                    print(dreamTeamPlayer[0])
+                    if dreamTeamPlayer[0] not in newTeamNames:
+                        newPlayer = dreamTeamPlayer[0]
+                        recommedations.append(f"Transfer OUT {player[4]} for {newPlayer}")
+
         return recommedations
 
     
