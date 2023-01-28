@@ -60,7 +60,7 @@ class DatabaseUpdater():
 
     def getUnderstatPlayerStatsByGameweek(self, understatID: int):
         x = UnderstatStats(understatID)
-        x.populateAllGameweeks()
+        x.populateDatabase()
 
     def populateAllUnderstatPlayerStatsByGameweek(self):
         # time delay to allow for admin tasks in terminal

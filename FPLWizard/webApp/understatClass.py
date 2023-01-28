@@ -15,14 +15,15 @@ from understat import Understat
 
 from .models import APIIDDictionary, UnderstatAPIStatsGameweek
 from FPLWizard.settings import CURRENT_SEASON
+from databaseManager import DatabaseManager
 
 # initialise nest_asyncio, which allows asynchronous functions to be nested
 
-class UnderstatStats():
+class UnderstatStats(DatabaseManager):
     def __init__(self, understatID: int):
         self.understatID = understatID
     
-    def populateAllGameweeks(self):
+    def populateDatabase(self):
         # code to fix an issue with asyncio package found here: https://github.com/encode/httpx/issues/914
         if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
             asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
