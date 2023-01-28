@@ -11,46 +11,6 @@ class FPLStats(databaseManager):
     def __init__(self, fplID: int):
         self.fplID = fplID
         
-    def getPlayerName(self):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID).fpl_player_name
-
-    def getPlayerAssists(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_assists
-
-    def getPlayerGoalsConceded(self, gameweek:int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_goals_conceded
-
-    def getPlayerCleanSheets(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_clean_sheets
-
-    def getPlayerTotalPoints(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_total_points
-    
-    # This still needs to include gameweek to account for interleague transfers occuring in the january transfer window
-    def getPlayerTeamID(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_team
-
-    def getMinutes(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).minutes
-    
-    def getGoals(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).goals
-
-    def getPlayerPosition(self):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID).fpl_position
-    
-    def getPlayerCost(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_cost
-    
-    def getPlayerThreat(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_threat
-    
-    def getPlayerInfluence(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_influence
-    
-    def getPlayerCreativity(self, gameweek: int):
-        return FPLAPIStatsGameweek.objects.get(fpl_id=self.fplID, fplGameweekNumber=gameweek).fpl_creativity
-
     def populateDatabase(self):
         url = f"https://fantasy.premierleague.com/api/element-summary/{self.fplID}/"
 

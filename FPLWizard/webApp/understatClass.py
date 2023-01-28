@@ -22,35 +22,6 @@ class UnderstatStats():
     def __init__(self, understatID: int):
         self.understatID = understatID
     
-    def getUnderstatID(self):
-        return self.understatID
-    
-    def getNonPenaltyXG(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_npxg
-    
-    # xg = expected goals: a statistic used in modern football analytics to provide a better indication of goal output
-    def getXG(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_xG
-    
-    # xa = expected assists: a statistic used in modern football analytics to provide a better indication of assist output
-    def getXA(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_xA
-    
-    def getKeyPasses(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_key_passes
-    
-    def getXGChain(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_xG_chain
-    
-    def getXGBuildup(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_xG_buildup
-    
-    def getShots(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_shots
-    
-    def getYellowCards(self, gameweek: int):
-        return UnderstatAPIStatsGameweek.objects.get(understat_id=self.understatID, understat_gameweekNumber=gameweek).understat_yellow_cards
-    
     def populateAllGameweeks(self):
         # code to fix an issue with asyncio package found here: https://github.com/encode/httpx/issues/914
         if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
