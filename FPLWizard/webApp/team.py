@@ -5,9 +5,9 @@ import math
 
 from .models import Team
 from .models import Fixture
-from .databaseManager import databaseManager
+from .databaseManager import DatabaseManager
 
-class TeamUpdater(databaseManager):
+class TeamUpdater(DatabaseManager):
     # return the probability that a team beats their opponent based on their elos
     # implementation of mainstream elo algorithm found in online games (chess etc.)
     # adjusted to favour the home team slightly (probabilities still add to 1)

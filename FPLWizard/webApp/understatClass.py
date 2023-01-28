@@ -15,7 +15,7 @@ from understat import Understat
 
 from .models import APIIDDictionary, UnderstatAPIStatsGameweek
 from FPLWizard.settings import CURRENT_SEASON
-from databaseManager import DatabaseManager
+from .databaseManager import DatabaseManager
 
 # initialise nest_asyncio, which allows asynchronous functions to be nested
 

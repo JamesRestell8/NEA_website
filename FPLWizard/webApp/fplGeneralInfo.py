@@ -9,10 +9,10 @@ from .models import APIIDDictionary
 from .models import UnderstatAPIStatsGameweek
 from .models import Fixture
 from .models import Team
-from .databaseManager import databaseManager
+from .databaseManager import DatabaseManager
 from .team import TeamUpdater
 
-class PlayerGeneralInfoUpdater(databaseManager):
+class PlayerGeneralInfoUpdater(DatabaseManager):
     def updateForm(self, fplID: int) -> float:
         position = PlayerTeamAndPosition.objects.get(playerID=fplID).position
         try:

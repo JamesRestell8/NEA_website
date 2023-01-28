@@ -8,7 +8,6 @@ from django.contrib import messages
 import json
 
 from .databaseUpdates import DatabaseUpdater
-from .user import User
 from .models import APIIDDictionary, FPLAPIStatsGameweek, PlayerTeamAndPosition, UnderstatAPIStatsGameweek, Team
 import pandas as pd
 from .forms import userTeamEntry
