@@ -27,7 +27,7 @@ class FixtureUpdater(DatabaseManager):
         
         fixtures = pd.DataFrame(r)
         fixtures = fixtures[['started', 'id', 'team_h', 'team_a', 'team_h_score', 'team_a_score', 'event']]
-
+        # for every fixture in the dataframe, add an entry in the Fixture table of the database.
         for i in range(len(fixtures['id'])):
             needsUpdate = True
             # if the game hasn't been played, set scores to -1.

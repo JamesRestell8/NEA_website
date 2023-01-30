@@ -30,19 +30,20 @@ class knapsackSolver():
 
 
     def checkPositions(self, items: list, toExclude: list) -> int:
+        # positions codes - GK, DEF, MID, ATT
         unique = [1, 2, 3, 4]
-
+        # keep track of how many players of each position have been found
         count = [0 for i in range(len(unique))]
         for item in items:
             count[item - 1] += 1
-
+        # these are the position limits for the FPL squad - in order of GK, DEF, MID, ATT
         limits = [2, 5, 5, 3]
         answer = 0
         for i in range(len(count)):
+            # flag a position as done if the position limit has been reached, and it hasn't already been flagged
             if count[i] == limits[i] and (i + 1) not in toExclude:
                 answer = i + 1
         return answer
-
 
 
     def getDensities(self, costs: list, values: list) -> list:

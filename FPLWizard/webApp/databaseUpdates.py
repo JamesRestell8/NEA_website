@@ -17,25 +17,19 @@ from .fplGeneralInfo import PlayerGeneralInfoUpdater
 pd.options.mode.chained_assignment = None
 
 class DatabaseUpdater():
-    # for the convenience of the user, the database should update
-    # every day at midnight, so that the most recent fixture results
-    # can be added before changes need to be made the next day
     def __init__(self):
         self.time = datetime.now()
-    
-    # need to determine which tables need to be updated live,
-    # and which tables can just be left for the whole season
-    # need methods to update and populatre all of the fields in the
-    # database daily.
 
     def setApiIdDictionary(self):
         # this function should only run when the table is empty (on initialisation)
         if len(APIIDDictionary.objects.all()) < 10:
+            # read the id dictionary from Vaastav into a dataframe to be stored in the database
             table = pd.read_csv(f"{BASE_DIR}/webApp/id_dict.csv")
             fplIDs = table['FPL_ID']
             understatIDs = table['Understat_ID']
             fplNames = table['FPL_Name']
             understatNames = table['Understat_Name']
+            # for every entry in the .csv file, save the data into the database as a row
             for i in range(len(fplIDs)):
                 row = APIIDDictionary(playerID=i+1, fplID=fplIDs[i], understatID=understatIDs[i],
                                     fplName=fplNames[i], understatName=understatNames[i])
@@ -55,7 +49,6 @@ class DatabaseUpdater():
         ids = APIIDDictionary.objects.all()
         # for each player, get all their gameweeks and add them to the FPLGameweek table in DB
         for entry in ids:
-            print(f"added fpl player {entry.fplID}")
             self.getFPLPlayerStatsByGameweek(entry.fplID)
 
     def getUnderstatPlayerStatsByGameweek(self, understatID: int):
@@ -68,7 +61,6 @@ class DatabaseUpdater():
         ids = APIIDDictionary.objects.all()
 
         for entry in ids:
-            print(f"added understat player {entry.understatID}")
             self.getUnderstatPlayerStatsByGameweek(entry.understatID)
 
     def updateTeamTable(self):
@@ -94,12 +86,12 @@ class DatabaseUpdater():
         print("Fixtures done", end='\n')
         self.updateTeamTable()
         print("teams updated", end="\n")
-        # # ~ 5 mins
+        # ~ 8 mins
         start = time.time()
         self.populateAllFPLPlayerStatsByGameweek()
         end = time.time()
         print(f"FPL database done in {end - start} seconds")
-        # ~10 mins
+        # ~ 10 mins
         start = time.time()
         self.populateAllUnderstatPlayerStatsByGameweek()
         end = time.time()

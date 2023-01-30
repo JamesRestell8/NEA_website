@@ -65,6 +65,7 @@ class TransferRecommender():
         playerTable = []
         recommedations = []
         players = PlayerTeamAndPosition.objects.all()
+        # get the user's squad as a 2D array in playerTable
         for player in players:
             try:
                 cost = FPLAPIStatsGameweek.objects.filter(fpl_id=player.playerID).order_by('-fpl_gameweekNumber').first().fpl_cost
@@ -81,6 +82,8 @@ class TransferRecommender():
                 pass
         
         # an array of 2D arrays, each representing a 14 man team with one addition to be made
+        # for every player, if their xP is less than 4, remove that player from the team, and
+        # get the knapsack algorithm to recommend a 15th player to replace them with.
         for player in knapsackFriendlyTeam:
             if player[3] <= 4:
                 newTeam = self.getTeamWithoutPlayer(player, knapsackFriendlyTeam)

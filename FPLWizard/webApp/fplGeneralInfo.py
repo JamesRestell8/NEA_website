@@ -16,8 +16,10 @@ class PlayerGeneralInfoUpdater(DatabaseManager):
     def updateForm(self, fplID: int) -> float:
         position = PlayerTeamAndPosition.objects.get(playerID=fplID).position
         try:
+            # get the games that the player is involved in, and sort them by the most recent one first.
             playerGameweeks = FPLAPIStatsGameweek.objects.filter(fpl_id=fplID)
             mostRecentGameweeks = playerGameweeks.order_by('-fpl_gameweekNumber')
+
             icts = []
             minutes = []
             cleanSheets = []
@@ -33,6 +35,7 @@ class PlayerGeneralInfoUpdater(DatabaseManager):
                     minutes.append(mins)
                     cleanSheets.append(cleanSheet)
                     count += 1
+            # calculate average values for all the metrics
             ictScore = self.averageList(icts)
             minutesScore = self.averageList(minutes)
             cleanSheetScore = self.averageList(cleanSheets)
@@ -50,14 +53,15 @@ class PlayerGeneralInfoUpdater(DatabaseManager):
         if position == 1:
             return (xGChain * 3) + (cleanSheets * 6) + (minutes / 60) + (ICT / 100)
         elif position == 2:
-            return (xG * 4) + (xA * 4) + (cleanSheets * 5) + (minutes / 60) + (ICT / 100)
+            return (xGChain * 4) + (xA * 4) + (cleanSheets * 5) + (minutes / 60) + (ICT / 100)
         elif position == 3:
-            return (xG * 5) + (xA * 4) + (cleanSheets * 2) + (minutes / 60) + (ICT / 100)
+            return (xGChain * 5) + (xA * 4) + (cleanSheets * 2) + (minutes / 60) + (ICT / 100)
         elif position == 4:
-            return (xG * 5) + (xA * 4) + (minutes / 90) + (ICT / 100)
+            return (xG * 5) + (xA * 4) + (minutes / 60) + (ICT / 100)
         else:
             return 0
 
+    # this method is called by updateForm(), and is used to get the average metrics from the Understat table.
     def getUnderlyings(self, fplID: int) -> tuple:
         try:
             understatID = APIIDDictionary.objects.get(fplID=fplID).understatID
@@ -132,7 +136,6 @@ class PlayerGeneralInfoUpdater(DatabaseManager):
                 existing.save()
             # add the player if the player does not exist
             except PlayerTeamAndPosition.DoesNotExist:
-                print("Didn't exist")
                 row = PlayerTeamAndPosition(
                     playerID=info['id'][i],
                     teamID=info['team'][i],

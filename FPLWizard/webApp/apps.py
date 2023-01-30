@@ -16,6 +16,6 @@ class WebappConfig(AppConfig):
         scheduler = BackgroundScheduler(daemon=True)
         db = DatabaseUpdater()
 
-        # DatabaseUpdater function that runs all the required functions in order
-        scheduler.add_job(db.tasksInOrder, 'interval', minutes=30, next_run_time=datetime.now())
+        # DatabaseUpdater function that runs all the required functions in order - will be run every 12 hours
+        scheduler.add_job(db.tasksInOrder, 'interval', minutes=720, next_run_time=datetime.now())
         scheduler.start()
