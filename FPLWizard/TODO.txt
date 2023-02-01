@@ -1,1 +1,0 @@
-- Use include html function for the navbar instead of extends, means it can be used for all pages
