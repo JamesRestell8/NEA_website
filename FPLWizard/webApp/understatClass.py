@@ -17,7 +17,8 @@ from .models import APIIDDictionary, UnderstatAPIStatsGameweek
 from FPLWizard.settings import CURRENT_SEASON
 from .databaseManager import DatabaseManager
 
-# initialise nest_asyncio, which allows asynchronous functions to be nested
+# This class is the Understat equivalent of FPLStatsUpdater, 
+# adding player information for every gameweek to the UnderstatAPIStatsGameweek table.
 
 class UnderstatStats(DatabaseManager):
     def __init__(self, understatID: int):

@@ -12,6 +12,8 @@ from .models import Team
 from .databaseManager import DatabaseManager
 from .team import TeamUpdater
 
+# This class is responsible for maintaining the PlayerTeamAndPosition table in the database, 
+# with player IDs stored alongside their team, position, form and expected points.
 class PlayerGeneralInfoUpdater(DatabaseManager):
     def updateForm(self, fplID: int) -> float:
         position = PlayerTeamAndPosition.objects.get(playerID=fplID).position

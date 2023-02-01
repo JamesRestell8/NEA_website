@@ -7,6 +7,7 @@ from .models import Team
 from .models import Fixture
 from .databaseManager import DatabaseManager
 
+# This class is responsible for updating the Team table of the database
 class TeamUpdater(DatabaseManager):
     # return the probability that a team beats their opponent based on their elos
     # implementation of mainstream elo algorithm found in online games (chess etc.)

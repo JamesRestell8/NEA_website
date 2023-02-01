@@ -6,6 +6,8 @@ import pandas as pd
 from .models import Fixture
 from .databaseManager import DatabaseManager
 
+# This class inherits from DatabaseManager,
+# and is responsible for updating the Fixture table in the database with relevant information.
 class FixtureUpdater(DatabaseManager):
     def populateDatabase(self):
         url = "https://fantasy.premierleague.com/api/fixtures"

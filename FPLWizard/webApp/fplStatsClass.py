@@ -6,7 +6,8 @@ import pandas as pd
 from .models import FPLAPIStatsGameweek, APIIDDictionary
 from .databaseManager import DatabaseManager
 
-# A class that can access a player's stats by gameweek, as well as containing methods to update the FPLAPI database table
+# This is a class that is responsible for updating a players information in the FPLAPIStatsGameweek table. 
+# Every player needs an entry in the table for every gameweek they play in.
 class FPLStats(DatabaseManager):
     def __init__(self, fplID: int):
         self.fplID = fplID

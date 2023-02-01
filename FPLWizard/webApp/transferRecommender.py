@@ -3,6 +3,8 @@ import pandas as pd
 from .models import PlayerTeamAndPosition, FPLAPIStatsGameweek, APIIDDictionary
 from .knapsackSolver import knapsackSolver
 
+# This class is used for the MyFPL page, and handles the recommendations 
+# that will be made to the user in terms of which transfers to make and which bonus chips to play.
 class TransferRecommender():
     def __init__(self, currentTeam: list, transferInfo: dict, currentChips: pd.DataFrame) -> None:
         self.currentTeam = currentTeam

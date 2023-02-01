@@ -16,6 +16,9 @@ from .fplGeneralInfo import PlayerGeneralInfoUpdater
 # removes an error that is raised when modifying data in a pandas DataFrame
 pd.options.mode.chained_assignment = None
 
+# This class contains all the methods needed to update the database. 
+# This is useful so that the apscheduler library has a method to call at 
+# a set frequency that can handle all the database updates in one place.
 class DatabaseUpdater():
     def __init__(self):
         self.time = datetime.now()

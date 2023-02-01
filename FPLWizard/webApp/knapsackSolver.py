@@ -5,6 +5,10 @@ from django.db.models import Q
 
 from .models import Team, FPLAPIStatsGameweek, Fixture
 
+# This class is responsible for all scenarios where a Fantasy team has to be picked with the goal of optimising points return. 
+# Based on the famous 0-1 knapsack problem, this class takes a list of player prices and expected points 
+# returns as properties (among other things), and from there will pick a squad that both adheres 
+# to the squad restrictions of the FPL game, and also optimise points return.
 class knapsackSolver():
     def __init__(self, playerTable: list, budget: int, squadSize: int, answer: list, positionsDone: list, teamsDone: list):
         self.playerTable = playerTable
