@@ -183,3 +183,7 @@ td {
     text-align: center;
     background-color: #b8e7ff;
 }
+
+#error {
+    color: red;
+}

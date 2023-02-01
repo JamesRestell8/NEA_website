@@ -19,14 +19,19 @@ class PlayerGeneralInfoUpdater(DatabaseManager):
             # get the games that the player is involved in, and sort them by the most recent one first.
             playerGameweeks = FPLAPIStatsGameweek.objects.filter(fpl_id=fplID)
             mostRecentGameweeks = playerGameweeks.order_by('-fpl_gameweekNumber')
-
             icts = []
             minutes = []
             cleanSheets = []
             count = 0
-            while len(icts) != 5:
+            missing = 0
+            skip = True
+            while len(icts) != 5 and skip:
                 if Fixture.objects.get(fixtureID=mostRecentGameweeks[count].fpl_fixtureID).homeTeamGoals == -1:
                     count += 1
+                    missing += 1
+                    # if less than 5 of the 38 matches have been played, we don't need 5 matches worth of data
+                    if missing >= 33:
+                        skip = False
                 else:
                     ict = mostRecentGameweeks[count].fpl_influence + mostRecentGameweeks[count].fpl_creativity + mostRecentGameweeks[count].fpl_threat
                     mins = mostRecentGameweeks[count].fpl_minutes

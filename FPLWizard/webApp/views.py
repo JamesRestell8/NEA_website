@@ -47,40 +47,50 @@ def myFPL(request):
     userTotal = 0
     suggestionInfo = [0.0, 1000.0, [], []]
     userTeam = [] # a 2D array that contains an entry for every player in the team
+    error = False
+    errorMessage = ""
+
     # it it's not POST, we know it's GET
     if request.method == "POST":
         form = userTeamEntry(request.POST)
         if form.is_valid():
             try:
                 teamInfo = json.loads(form.cleanJSONField())
-                players = pd.DataFrame.from_dict(teamInfo['picks'])
-                ids = players[['element', 'purchase_price', 'is_captain', 'is_vice_captain']]
-                ids = ids.to_numpy().tolist()
-                for player in ids:
-                    # userTeam is indexed exactly as ids above but adds the xP metric at userTeam[4] and name at userTeam[5]
-                    userTeam.append((player[0], player[1], player[2], player[3], 
-                    PlayerTeamAndPosition.objects.get(playerID=player[0]).xP, 
-                    APIIDDictionary.objects.get(fplID=player[0]).understatName))
+                if teamInfo != "Error":
+                    players = pd.DataFrame.from_dict(teamInfo['picks'])
+                    ids = players[['element', 'purchase_price', 'is_captain', 'is_vice_captain']]
+                    ids = ids.to_numpy().tolist()                
+                    for player in ids:
+                        # userTeam is indexed exactly as ids above but adds the xP metric at userTeam[4] and name at userTeam[5]
+                        userTeam.append((player[0], player[1], player[2], player[3], 
+                        PlayerTeamAndPosition.objects.get(playerID=player[0]).xP, 
+                        APIIDDictionary.objects.get(fplID=player[0]).understatName))
 
-                chipInformation = pd.DataFrame.from_dict(teamInfo['chips'])
-                transferInformation = teamInfo['transfers']
-                for entry in userTeam:
-                    userTotal += entry[4]
-                print("before suggestionInfo")
-                suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation).getRecommendations()
-                print("after transfer...")
+                    chipInformation = pd.DataFrame.from_dict(teamInfo['chips'])
+                    transferInformation = teamInfo['transfers']
+                    for entry in userTeam:
+                        userTotal += entry[4]
+                    suggestionInfo = TransferRecommender(userTeam, transferInformation, chipInformation).getRecommendations()
+                else:
+                    userTeam = [("Error", "Error", "Error", "Error", "Error", "Error") for i in range(6)]
+                    error = True
             except Exception as e:
-                print(e)
-                userTeam = ["Error" for i in range(6)]
+                error = True
+                userTeam = [("Error", "Error", "Error", "Error", "Error", "Error") for i in range(6)]
         else:
             print("Team is not valid :(")
 
     else:
         form = userTeamEntry()
 
+    if error:
+        userTeam = [(" ", " ", " ", " ", " ", " ") for i in range(6)]
+        errorMessage = "Invalid JSON entry"
+        
     print(userTeam)
     context = {
         'content': userTeam,
+        'errorMessage': errorMessage,
         "userTotalXP": userTotal,
         'form': form,
         'budget': suggestionInfo[0],
