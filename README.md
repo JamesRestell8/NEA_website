@@ -5,7 +5,7 @@ This is a website that is targeted at FPL players who want data driven transfer 
 
 The site provides detailed statistics for all players, including an exclusive xP metric for a players expected performance, and also provides customised reccomendations when given a fantasy team.
 
-THE CODE FOR THE NEA PROJECT IS HELD WITHIN "NEA_website/FPLWizard/"
+THE CODE FOR THE NEA PROJECT IS HELD WITHIN "NEA_website/FPLWizard/webApp"
 
 ACKNOWLEDGEMENTS:
 Thanks to github user Vaastav for his dictionary linking FPL IDs to their respective Understat IDs in this project:
